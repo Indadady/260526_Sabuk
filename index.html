@@ -155,25 +155,25 @@
                       <!-- Card 1: Experience -->
                       <div class="bg-amber-50 border border-amber-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col">
                         <div class="bg-amber-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🍍</div>
-                        <h3 class="text-2xl font-bold mb-3 text-slate-800">펑리수 쿠킹 클래스</h3>
+                        <h3 class="text-2xl font-bold mb-3 text-slate-800">곽원익 펑리수 체험</h3>
                         <p class="text-slate-600 flex-grow mb-4">
-                            보는 여행에서 <strong>만드는 여행</strong>으로! 대만의 대표 간식 펑리수(파인애플 케이크)를 친구들과 직접 만들고 맛보는 오감만족 체험입니다.
+                            보는 여행에서 <strong>만드는 여행</strong>으로! 100년 전통의 곽원익 박물관에서 대만 대표 간식 펑리수를 직접 만들고 맛보는 체험입니다.
                         </p>
                         <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
-                            <li>✔️ 1인 1실습 베이킹 체험</li>
+                            <li>✔️ 2시간 소요 DIY 클래스</li>
                             <li>✔️ 내가 만든 펑리수 포장 & 시식</li>
                         </ul>
                     </div>
                     <!-- Card 2: History -->
                     <div class="bg-green-50 border border-green-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col">
                         <div class="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🏛️</div>
-                        <h3 class="text-2xl font-bold mb-3 text-slate-800">세계 4대 박물관</h3>
+                        <h3 class="text-2xl font-bold mb-3 text-slate-800">역사와 랜드마크</h3>
                         <p class="text-slate-600 flex-grow mb-4">
-                            중국 5천년 역사의 보물창고 <strong>국립고궁박물관</strong>과 대만의 영웅을 기리는 <strong>중정기념당</strong>을 방문하여 깊이 있는 역사 인식을 함양합니다.
+                            중국 5천년 역사의 보물창고 <strong>국립고궁박물관</strong>과 대만의 자존심 <strong>101 타워 전망대</strong>에서 과거와 현재를 조망합니다.
                         </p>
                         <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
-                            <li>✔️ 한국어 오디오 가이드 지원</li>
-                            <li>✔️ 옥배추, 육형석 등 핵심 유물 관람</li>
+                            <li>✔️ 세계 4대 박물관 관람</li>
+                            <li>✔️ 101 타워 전망대 등정</li>
                         </ul>
                     </div>
                     <!-- Card 3: Memory -->
@@ -181,11 +181,11 @@
                         <div class="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🏮</div>
                         <h3 class="text-2xl font-bold mb-3 text-slate-800">소원 천등 날리기</h3>
                         <p class="text-slate-600 flex-grow mb-4">
-                            영화 '그 시절 우리가 좋아했던 소녀'의 배경 <strong>스펀</strong>에서 기찻길 위로 우리의 꿈과 소원을 적은 천등을 하늘 높이 날려보냅니다.
+                            기찻길 마을 <strong>스펀</strong>에서 우리의 꿈과 소원을 적은 천등을 하늘 높이 날려보내고, <strong>지우펀</strong>의 낭만을 즐깁니다.
                         </p>
                         <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
                             <li>✔️ 4인 1조 천등 날리기 체험</li>
-                            <li>✔️ 지우펀(센과 치히로) 거리 탐방</li>
+                            <li>✔️ 예류 지질공원 기암괴석 탐방</li>
                         </ul>
                     </div>
                 </div>
@@ -234,8 +234,8 @@
                         </div>
                     </div>
 
-                     <!-- Video 3: Taipei 101 -->
-                     <div class="bg-white p-4 rounded-2xl shadow-md">
+                      <!-- Video 3: Taipei 101 -->
+                      <div class="bg-white p-4 rounded-2xl shadow-md">
                         <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'Ff7AdueZ8rE')">
                             <img src="https://img.youtube.com/vi/Ff7AdueZ8rE/maxresdefault.jpg" alt="Taipei 101" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
                             <div class="absolute inset-0 flex items-center justify-center play-overlay">
@@ -420,7 +420,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             
-            // D-Day Counter
+            // D-Day Counter (Updated to 2026-05-26)
             const dDayBadge = document.getElementById('d-day-badge');
             const targetDate = new Date('2026-05-26T00:00:00').getTime();
             const now = new Date().getTime();
@@ -473,49 +473,52 @@
             }, { threshold: 0.15 });
             sections.forEach(section => observer.observe(section));
             
-            // Schedule Data
+            // Schedule Data (Updated based on PDF)
             const scheduleData = {
                 day1: {
                     title: 'DAY 1: 5월 26일 (화) - 설렘의 시작',
                     items: [
-                        { time: '오전', desc: '<span class="text-red-600 font-bold">강원도 정선 사북 출발</span> → 인천공항 이동', icon: '🚌' },
-                        { time: '미팅', desc: '인천공항 제2터미널(T2) 집결 및 수속', icon: '🚩' },
-                        { time: '오후', desc: '인천 출발 (대한항공 KE) / 타이페이 도착', icon: '✈️' },
+                        { time: '07:00', desc: '<span class="text-red-600 font-bold">강원도 정선 사북 출발</span>', icon: '🚌' },
+                        { time: '미팅', desc: '인천공항 제2터미널(T2) 집결 / KE2021 수속', icon: '🚩' },
+                        { time: '10:30', desc: '인천 출발 (KE2021) / 12:10 타이페이 도착', icon: '✈️' },
+                        { time: '중식', desc: '현지식 (우육면)', icon: '🍜' },
                         { time: '명소', desc: '세계 4대 박물관 <strong class="text-green-800">국립고궁박물관</strong>', icon: '🏛️' },
-                        { time: '명소', desc: '타이페이의 랜드마크 <strong class="text-blue-800">101 타워 전망대</strong>', icon: '🏙️' },
-                        { time: '석식', desc: '현지식 (샤브샤브 등)', icon: '🍲' },
-                        { time: '휴식', desc: '<span class="bg-amber-100 px-2 py-1 rounded text-amber-800 font-bold">Early Check-in</span> 장거리 이동 피로 회복을 위해 호텔 조기 휴식', icon: '🛏️' }
+                        { time: '명소', desc: '근위병 교대식 관람 <strong>충렬사</strong>', icon: '💂' },
+                        { time: '명소', desc: '타이페이 랜드마크 <strong class="text-blue-800">101 타워 전망대</strong>', icon: '🏙️' },
+                        { time: '석식', desc: '현지식 (샤브샤브)', icon: '🍲' },
+                        { time: '숙박', desc: '호텔: 플래티넘 / 푸신 / 알로프트 / 참참 동급', icon: '🏨' }
                     ]
                 },
                 day2: {
-                    title: 'DAY 2: 5월 27일 (수) - 체험과 낭만',
+                    title: 'DAY 2: 5월 27일 (수) - 체험과 낭만 (단수이)',
                     items: [
-                        { time: '오전', desc: '대만의 영웅을 기리는 <strong>중정기념당</strong>', icon: '🇹🇼' },
-                        { time: '이동', desc: '낭만의 항구도시 <strong class="text-blue-600">단수이(Tamsui)</strong>로 이동', icon: '🚌' },
-                        { time: '명소', desc: '붉은 벽돌의 요새 <strong>홍마오청</strong> (영화 촬영지)', icon: '🏰' },
-                        { time: '체험', desc: '<strong class="text-amber-600 text-xl">★ 펑리수(파인애플 케이크) 만들기</strong>', icon: '🍍' },
-                        { time: '체험', desc: '단수이-빠리 페리 탑승 및 라오제 거리', icon: '⛴️' },
-                        { time: '석식', desc: '몽골리안 BBQ 또는 딤섬', icon: '🥟' },
-                        { time: '숙박', desc: '호텔 휴식', icon: '🏨' }
+                        { time: '오전', desc: '호텔 조식 후 이동', icon: '🍽️' },
+                        { time: '체험', desc: '<strong class="text-amber-600 text-xl">★ 곽원익 펑리수 박물관 (DIY 2시간)</strong>', icon: '🍍' },
+                        { time: '이동', desc: '낭만의 항구도시 <strong class="text-blue-600">단수이(Tamsui)</strong>로 이동 (40분)', icon: '🚌' },
+                        { time: '명소', desc: '유럽풍 붉은 벽돌 요새 <strong>홍마오청</strong>', icon: '🏰' },
+                        { time: '체험', desc: '단수이 거리 (대왕카스테라, 버블티) & 단수이강변공원', icon: '🥤' },
+                        { time: '체험', desc: '단수이-빠리 연결 <strong>전통 유람선</strong> 탑승', icon: '⛴️' },
+                        { time: '석식', desc: '몽골리안 BBQ', icon: '🍖' },
+                        { time: '숙박', desc: '호텔 투숙 및 휴식', icon: '🏨' }
                     ]
                 },
                 day3: {
-                    title: 'DAY 3: 5월 28일 (목) - 풍등과 야시장',
+                    title: 'DAY 3: 5월 28일 (목) - 자연과 소원',
                     items: [
-                        { time: '오전', desc: '기암괴석의 향연 <strong class="text-teal-700">예류 지질공원</strong>', icon: '🗿' },
-                        { time: '체험', desc: '기찻길 마을 <strong>스펀 - 천등 날리기</strong> (4인 1조)', icon: '🏮' },
-                        { time: '명소', desc: '센과 치히로의 행방불명 배경 <strong>지우펀</strong> 거리', icon: '🏮' },
-                        { time: '석식', desc: '현지식 (삼겹살 무제한 등)', icon: '🥓' },
-                        { time: '야간', desc: '타이페이 최대 <strong class="text-amber-600">스린 야시장</strong> 자율 탐방', icon: '🌙' },
-                        { time: '숙박', desc: '호텔 휴식', icon: '🏨' }
+                        { time: '오전', desc: '센과 치히로의 배경 <strong>지우펀</strong> (자유시간)', icon: '🏮' },
+                        { time: '명소', desc: '기암괴석의 향연 <strong class="text-teal-700">예류 국립해양 지질공원</strong>', icon: '🗿' },
+                        { time: '체험', desc: '기차마을 <strong>스펀 - 천등 날리기</strong> (4인 1개)', icon: '🙏' },
+                        { time: '석식', desc: '현지식 (삼겹살 무제한)', icon: '🥓' },
+                        { time: '야간', desc: '타이페이 최대 <strong class="text-amber-600">스린 야시장</strong> (자유시간)', icon: '🌙' },
+                        { time: '숙박', desc: '호텔 투숙 및 휴식', icon: '🏨' }
                     ]
                 },
                 day4: {
                     title: 'DAY 4: 5월 29일 (금) - 아쉬움을 뒤로하고',
                     items: [
                         { time: '오전', desc: '장개석 총통의 정원 <strong>스린 관저</strong> 산책', icon: '🌳' },
-                        { time: '이동', desc: '타이페이 공항 이동 및 출국 수속', icon: '🚌' },
-                        { time: '오후', desc: '타이페이 출발 (KE) / 인천 도착', icon: '✈️' },
+                        { time: '이동', desc: '공항 이동 및 출국 수속', icon: '🚌' },
+                        { time: '13:20', desc: '타이페이 출발 (KE2022) / 16:50 인천 도착', icon: '✈️' },
                         { time: '도착', desc: '전용 버스로 정선 사북 이동 및 해산', icon: '🏠' }
                     ]
                 }
