@@ -74,13 +74,6 @@
             outline: none;
             background-color: #fef08a; /* Yellow-200 */
         }
-
-        /* Short Video Container (Portrait) */
-        .shorts-container {
-            aspect-ratio: 9/16;
-            max-width: 320px;
-            margin: 0 auto;
-        }
     </style>
 </head>
 <body class="antialiased bg-slate-50">
@@ -322,7 +315,7 @@
             </div>
         </section>
 
-        <!-- ★ NEW: Safety & Etiquette Section (Added) -->
+        <!-- ★ NEW: Safety & Etiquette Section (Updated with Operational Manual) -->
         <section id="safety" class="py-20 bg-amber-50">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
@@ -334,7 +327,7 @@
                 <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-amber-100">
                     <div class="grid md:grid-cols-2">
                         <!-- Left: Safety Rules List -->
-                        <div class="p-8 md:p-10 flex flex-col justify-center">
+                        <div class="p-8 md:p-10 flex flex-col justify-center border-r border-slate-100">
                             <ul class="space-y-6">
                                 <li class="flex items-start">
                                     <div class="flex-shrink-0 w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mr-4">
@@ -359,8 +352,8 @@
                                         <i class="fa-solid fa-people-group"></i>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-lg text-slate-800">지우펀 인파 주의 (영상 필독)</h4>
-                                        <p class="text-slate-600 text-sm mt-1">지우펀은 사람이 매우 많아 한순간에 일행을 놓칩니다. <span class="font-bold underline">절대 단독 행동 금지, 조별 이동</span>을 준수하세요.</p>
+                                        <h4 class="font-bold text-lg text-slate-800">지우펀 인파 주의</h4>
+                                        <p class="text-slate-600 text-sm mt-1">지우펀은 사람이 매우 많아 한순간에 일행을 놓칩니다. <span class="font-bold underline">우측 영상 및 수칙 필독</span> 바랍니다.</p>
                                     </div>
                                 </li>
                                 <li class="flex items-start">
@@ -383,14 +376,66 @@
                                 </li>
                             </ul>
                         </div>
-                        <!-- Right: Warning Video (Shorts) -->
-                        <div class="bg-black flex items-center justify-center p-4">
-                            <div class="w-full h-full flex flex-col items-center justify-center text-center">
-                                <h4 class="text-white font-bold mb-4 text-lg"><i class="fa-solid fa-eye animate-pulse text-red-500"></i> 현장상황: 지우펀 인파 실화?</h4>
-                                <div class="relative w-full max-w-[320px] aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        
+                        <!-- Right: Warning Video & Operational Manual (Control Center Style) -->
+                        <div class="bg-slate-900 p-6 flex flex-col items-center justify-start text-center relative overflow-hidden">
+                            <!-- Pattern Background -->
+                            <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+')]"></div>
+                            
+                            <!-- Top Alert Banner -->
+                            <div class="z-10 w-full mb-4">
+                                <div class="bg-red-600 text-white font-bold text-sm py-2 px-4 rounded-lg shadow-lg animate-pulse border-2 border-red-400">
+                                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                                    혼잡 구간에서는 ‘조별 이동 + 지정 집결지’가 원칙입니다.
                                 </div>
-                                <p class="text-slate-400 text-xs mt-3">* 좁은 계단길에서 밀거나 장난치면 대형 사고로 이어집니다.</p>
+                            </div>
+
+                            <!-- Video Container -->
+                            <div class="z-10 w-full max-w-[280px] aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700 bg-black relative">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                            
+                            <!-- Disclaimer (Liability Protection) -->
+                            <p class="z-10 text-slate-500 text-[10px] mt-2 mb-4 w-full px-4">
+                                * 본 영상은 혼잡도 ‘체감’ 공유용이며, 실제 동선·집결은 인솔자 안내를 따릅니다.
+                            </p>
+
+                            <!-- Bottom Action Manual -->
+                            <div class="z-10 w-full bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl p-4 text-left">
+                                <!-- 1. Emergency Protocol -->
+                                <div class="mb-4">
+                                    <h5 class="text-yellow-400 font-bold text-xs mb-2 uppercase tracking-wider flex items-center">
+                                        <i class="fa-solid fa-bullhorn mr-2"></i> 인솔자 호출 시 행동요령
+                                    </h5>
+                                    <div class="flex items-center justify-between text-[11px] font-bold text-white bg-slate-700/50 p-2 rounded border border-slate-600">
+                                        <div class="text-center"><span class="block text-red-400 mb-1"><i class="fa-solid fa-hand"></i></span>즉시 정지</div>
+                                        <i class="fa-solid fa-chevron-right text-slate-500"></i>
+                                        <div class="text-center"><span class="block text-blue-400 mb-1"><i class="fa-solid fa-shield-halved"></i></span>안전지대 대기</div>
+                                        <i class="fa-solid fa-chevron-right text-slate-500"></i>
+                                        <div class="text-center"><span class="block text-green-400 mb-1"><i class="fa-solid fa-flag"></i></span>집결지 이동</div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Crowd Rules (3-Line Rule) -->
+                                <div>
+                                    <h5 class="text-yellow-400 font-bold text-xs mb-2 uppercase tracking-wider flex items-center">
+                                        <i class="fa-solid fa-check-double mr-2"></i> 혼잡구간 3대 수칙
+                                    </h5>
+                                    <ul class="text-xs text-slate-300 space-y-2">
+                                        <li class="flex items-start">
+                                            <i class="fa-solid fa-user-group text-slate-500 mt-0.5 mr-2"></i>
+                                            <span><strong class="text-white">2인 1조 이동</strong> (단독행동 금지)</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa-solid fa-clock text-slate-500 mt-0.5 mr-2"></i>
+                                            <span><strong class="text-white">집결지·시간 엄수</strong> (이탈 시 1차 복귀)</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa-solid fa-camera text-slate-500 mt-0.5 mr-2"></i>
+                                            <span><strong class="text-white">이동 중 정지 금지</strong> (사진/쇼핑은 지정 장소)</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
