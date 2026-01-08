@@ -21,8 +21,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0fdf4; color: #1e293b; }
+        /* [Fix 1] Body 배경색 충돌 해결 */
+        body { font-family: 'Noto Sans KR', sans-serif; color: #1e293b; }
         
+        /* [Fix 2] 애니메이션 키프레임 정의 */
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: none; } 
+        }
+        .animate-fade-in { 
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
         /* Hero Background - Jiufen Lanterns */
         .hero-bg-taiwan { 
             background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url('https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRx1qsxz8owmAzPeDg7i3VStkn2sxGxKJ0BCsHruBNyZknQWj1dAxtFoVGD4AHEcdf8r75EkQLJUuFb12U6i-BJm_qz983wj41FlwNCOSWj3Vesnck');
@@ -34,6 +44,7 @@
         .nav-link { transition: all 0.3s; }
         .nav-link:hover, .nav-link.active { color: #d97706; border-bottom-color: #d97706; } /* Amber-600 */
         
+        /* [Fix 3] 탭 버튼 Active 스타일 CSS 통합 */
         .tab-btn { transition: all 0.3s; }
         .tab-btn.active { background-color: #d97706; color: white; border-color: #d97706; }
         
@@ -83,11 +94,11 @@
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Tourmaker Logo & D-Day -->
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker Logo" class="h-8 w-auto">
+                <div class="flex-shrink-0 flex items-center gap-3 max-w-[70%]">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker Logo" class="h-8 w-auto flex-shrink-0">
                     <!-- D-Day Counter Badge -->
-                    <div id="d-day-badge" class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md animate-pulse">
-                        Calculating...
+                    <div id="d-day-badge" class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md whitespace-nowrap overflow-hidden text-ellipsis">
+                        Loading...
                     </div>
                 </div>
                 
@@ -209,6 +220,7 @@
                 
                 <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
                     <!-- Video 1: Official Promo -->
+                    <!-- [Fix 5] YouTube 개인정보 보호 강화 (nocookie + referrerpolicy) -->
                     <div class="bg-white p-4 rounded-2xl shadow-md">
                         <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'ZmTvNm1R0HI')">
                             <img src="https://img.youtube.com/vi/ZmTvNm1R0HI/maxresdefault.jpg" alt="Taiwan Tourism Video" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
@@ -251,10 +263,11 @@
                 
                 <!-- Tab Navigation -->
                 <div class="max-w-5xl mx-auto bg-slate-50 rounded-t-2xl shadow-sm border-b overflow-hidden flex flex-wrap">
-                    <button class="tab-btn active flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100 transition-colors" data-tab="day1">DAY 1 (5/26)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100 transition-colors" data-tab="day2">DAY 2 (5/27)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100 transition-colors" data-tab="day3">DAY 3 (5/28)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100 transition-colors" data-tab="day4">DAY 4 (5/29)</button>
+                    <!-- [Fix 3] 탭 버튼 Active CSS 제어 -->
+                    <button class="tab-btn active flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day1">DAY 1 (5/26)</button>
+                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day2">DAY 2 (5/27)</button>
+                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day3">DAY 3 (5/28)</button>
+                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day4">DAY 4 (5/29)</button>
                 </div>
 
                 <!-- Tab Content -->
@@ -315,7 +328,7 @@
             </div>
         </section>
 
-        <!-- ★ NEW: Safety & Etiquette Section (Updated with Operational Manual) -->
+        <!-- Safety & Etiquette Section (Operational Manual) -->
         <section id="safety" class="py-20 bg-amber-50">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
@@ -344,7 +357,8 @@
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-lg text-slate-800">지하철(MRT) 취식 절대 금지</h4>
-                                        <p class="text-slate-600 text-sm mt-1">대만 지하철(노란 선 안쪽)에서는 껌, 사탕, <span class="text-red-500 font-bold">물 한 모금도 마시면 안 됩니다.</span> (최대 30만원 벌금)</p>
+                                        <!-- [Fix 6] 구체적 금액 삭제 및 '고액 벌금'으로 변경 -->
+                                        <p class="text-slate-600 text-sm mt-1">대만 지하철(노란 선 안쪽)에서는 껌, 사탕, <span class="text-red-500 font-bold">물 한 모금도 마시면 안 됩니다.</span> (적발 시 고액의 과태료 부과)</p>
                                     </div>
                                 </li>
                                 <li class="flex items-start">
@@ -391,8 +405,9 @@
                             </div>
 
                             <!-- Video Container -->
+                            <!-- [Fix 5] YouTube 개인정보 보호 강화 -->
                             <div class="z-10 w-full max-w-[280px] aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700 bg-black relative">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             </div>
                             
                             <!-- Disclaimer (Liability Protection) -->
@@ -424,7 +439,8 @@
                                     <ul class="text-xs text-slate-300 space-y-2">
                                         <li class="flex items-start">
                                             <i class="fa-solid fa-user-group text-slate-500 mt-0.5 mr-2"></i>
-                                            <span><strong class="text-white">2인 1조 이동</strong> (단독행동 금지)</span>
+                                            <!-- [Fix 6] 3~4인 1조로 현실화 -->
+                                            <span><strong class="text-white">3~4인 1조 이동</strong> (최소 2인 이상 유지)</span>
                                         </li>
                                         <li class="flex items-start">
                                             <i class="fa-solid fa-clock text-slate-500 mt-0.5 mr-2"></i>
@@ -488,13 +504,19 @@
                 <h2 class="text-2xl font-bold mb-8">비상 연락망</h2>
                 <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-lg shadow-sm border-2 border-amber-400 flex flex-col items-center justify-center">
-                        <h4 class="font-bold text-slate-900 mb-2">투어메이커 담당자</h4>
-                        <div class="text-center mb-2">
-                            <p class="font-medium text-slate-700">총괄: 류길현 선생님 (사북고)</p>
+                        <h4 class="font-bold text-slate-900 mb-4">인솔 및 비상연락</h4>
+                        
+                        <!-- School Contact -->
+                        <div class="text-center mb-4 w-full">
+                            <span class="inline-block px-2 py-1 bg-slate-100 rounded text-xs text-slate-500 font-bold mb-1">학교 측 담당 (사북고)</span>
+                            <p class="font-bold text-slate-800 text-lg">류길현 선생님</p>
                         </div>
-                        <div class="text-center pt-2 border-t border-slate-100 w-full">
-                            <p class="font-medium text-slate-700">인솔: 이재명 (투어메이커)</p>
-                            <a href="tel:01094437881" class="text-sm text-blue-600">010-9443-7881</a>
+                    
+                        <!-- Agency Contact -->
+                        <div class="text-center pt-4 border-t border-slate-100 w-full">
+                            <span class="inline-block px-2 py-1 bg-amber-100 rounded text-xs text-amber-700 font-bold mb-1">여행사 측 담당 (투어메이커)</span>
+                            <p class="font-bold text-slate-800 text-lg">이재명</p>
+                            <a href="tel:01094437881" class="text-blue-600 font-bold block mt-1 text-xl hover:text-blue-800 transition-colors"><i class="fa-solid fa-phone mr-2"></i>010-9443-7881</a>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-sm">
@@ -522,14 +544,16 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // Video Play Logic
+        // Video Play Logic (Updated for nocookie)
         function playVideo(element, videoId) {
             const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
             iframe.title = "YouTube Video";
             iframe.className = "w-full h-full";
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
+            // [Fix 5] Referrer Policy 추가
+            iframe.referrerPolicy = "strict-origin-when-cross-origin";
             
             element.innerHTML = '';
             element.appendChild(iframe);
@@ -538,23 +562,37 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             
-            // D-Day Counter (Updated to 2026-05-26)
+            // [Fix 4] D-Day Counter (Precision Logic + Trip End Logic)
             const dDayBadge = document.getElementById('d-day-badge');
-            const targetDate = new Date('2026-05-26T00:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = targetDate - now;
             
-            const days = Math.ceil(distance / (1000 * 60 * 60 * 24));
+            const startDate = new Date('2026-05-26T00:00:00');
+            const endDate = new Date('2026-05-29T00:00:00'); // 3박 4일 종료일
             
-            if (days > 0) {
-                dDayBadge.innerText = `D-${days}`;
-            } else if (days === 0) {
-                dDayBadge.innerText = `D-Day (출발)`;
-                dDayBadge.classList.replace('bg-green-600', 'bg-red-600');
-            } else {
-                const tripDay = Math.abs(days) + 1;
+            startDate.setHours(0,0,0,0);
+            endDate.setHours(0,0,0,0);
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const diffTime = startDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays > 0) {
+                // 여행 전
+                dDayBadge.innerText = `D-${diffDays}`;
+                dDayBadge.classList.add('bg-green-600');
+            } else if (diffDays <= 0 && today <= endDate) {
+                // 여행 중 (출발일 ~ 종료일)
+                const tripDay = Math.abs(diffDays) + 1;
                 dDayBadge.innerText = `여행 ${tripDay}일차`;
-                dDayBadge.classList.replace('bg-green-600', 'bg-blue-600');
+                dDayBadge.classList.add('bg-blue-600');
+            } else {
+                // 여행 종료 후
+                dDayBadge.innerText = "모든 여정이 종료되었습니다. 좋은 추억으로 오래 간직되길 바랍니다.";
+                dDayBadge.classList.add('bg-slate-600');
+                // 긴 문구를 위해 스타일 조정 (모바일 등 고려)
+                dDayBadge.classList.remove('rounded-full');
+                dDayBadge.classList.add('rounded-lg');
             }
 
             // My Yellow Note (Auto-save)
@@ -648,6 +686,7 @@
 
             function renderTabContent(day) {
                 const data = scheduleData[day];
+                // [Fix 2] animate-fade-in 클래스 사용 (CSS에 정의됨)
                 let content = `<div class="animate-fade-in"><h3 class="text-2xl font-bold mb-8 text-slate-800 border-b pb-4">${data.title}</h3><ul class="space-y-6">`;
                 data.items.forEach(item => {
                     content += `
@@ -664,9 +703,10 @@
                 tabsContainer.innerHTML = content;
             }
 
+            // [Fix 3] JS에서는 active 클래스 토글만 담당 (색상 제어 로직 제거)
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active', 'bg-amber-600', 'text-white'));
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active'); 
                     renderTabContent(button.dataset.tab);
                 });
