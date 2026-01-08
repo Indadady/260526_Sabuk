@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <!-- 🚨 Google Analytics (GA4) - Tourmaker 통합 관리 [추가됨] -->
+    <!-- 🚨 Google Analytics (GA4) - Tourmaker 통합 관리 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -23,7 +23,7 @@
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0fdf4; color: #1e293b; }
         
-        /* Hero Background - Updated to New Requested Image (Jiufen Lanterns) */
+        /* Hero Background - Jiufen Lanterns */
         .hero-bg-taiwan { 
             background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url('https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRx1qsxz8owmAzPeDg7i3VStkn2sxGxKJ0BCsHruBNyZknQWj1dAxtFoVGD4AHEcdf8r75EkQLJUuFb12U6i-BJm_qz983wj41FlwNCOSWj3Vesnck');
             background-size: cover;
@@ -45,7 +45,7 @@
         .hover-zoom { transition: transform 0.3s ease; }
         .hover-zoom:hover { transform: scale(1.02); }
 
-        /* Play Button Overlay for Thumbnails */
+        /* Play Button Overlay */
         .play-overlay {
             background: rgba(0, 0, 0, 0.4);
             transition: all 0.3s;
@@ -75,10 +75,12 @@
             background-color: #fef08a; /* Yellow-200 */
         }
 
-        /* Custom Colors for Taiwan Theme */
-        .text-taiwan-green { color: #15803d; } /* Green-700 */
-        .bg-taiwan-green { background-color: #15803d; }
-        .text-taiwan-gold { color: #b45309; } /* Amber-700 */
+        /* Short Video Container (Portrait) */
+        .shorts-container {
+            aspect-ratio: 9/16;
+            max-width: 320px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body class="antialiased bg-slate-50">
@@ -108,7 +110,7 @@
                         <a href="#highlight"   class="nav-link px-3 py-2 border-b-2 border-transparent">핵심 탐방</a>
                         <a href="#videos"      class="nav-link px-3 py-2 border-b-2 border-transparent">미리보기</a>
                         <a href="#timeline"    class="nav-link px-3 py-2 border-b-2 border-transparent">일정</a>
-                        <a href="#pretravel"   class="nav-link px-3 py-2 border-b-2 border-transparent text-green-700 font-bold">준비/날씨</a>
+                        <a href="#safety"      class="nav-link px-3 py-2 border-b-2 border-transparent text-red-600 font-bold">안전/준비</a>
                         <a href="#mynote"      class="nav-link px-3 py-2 border-b-2 border-transparent text-amber-600 font-bold"><i class="fa-solid fa-pen-to-square"></i> MY 노트</a>
                     </div>
                 </div>
@@ -120,7 +122,7 @@
                 <a href="#home" class="block">홈</a>
                 <a href="#highlight" class="block">핵심</a>
                 <a href="#timeline" class="block">일정</a>
-                <a href="#pretravel" class="block text-green-700 font-bold">준비/날씨</a>
+                <a href="#safety" class="block text-red-600 font-bold">안전/준비</a>
                 <a href="#mynote" class="block text-amber-600 font-bold">★MY노트</a>
             </div>
         </div>
@@ -229,7 +231,7 @@
                         </div>
                     </div>
 
-                    <!-- Video 2: Fengsu Making (Updated to Kuo Yuan Ye) -->
+                    <!-- Video 2: Fengsu Making -->
                     <div class="bg-white p-4 rounded-2xl shadow-md">
                         <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'hyF-G9LxE1E')">
                             <img src="https://img.youtube.com/vi/hyF-G9LxE1E/maxresdefault.jpg" alt="Kuo Yuan Ye Fengsu DIY" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
@@ -241,22 +243,6 @@
                             <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
                                 <span class="text-xs font-bold text-green-400 bg-black/50 px-2 py-1 rounded">Activity</span>
                                 <p class="text-white font-bold text-lg mt-1">곽원익 펑리수 만들기 체험 (쿠킹클래스)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                      <!-- Video 3: Taipei 101 -->
-                      <div class="bg-white p-4 rounded-2xl shadow-md">
-                        <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'Ff7AdueZ8rE')">
-                            <img src="https://img.youtube.com/vi/Ff7AdueZ8rE/maxresdefault.jpg" alt="Taipei 101" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
-                            <div class="absolute inset-0 flex items-center justify-center play-overlay">
-                                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white play-icon">
-                                    <span class="text-white text-3xl ml-1">▶</span>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                <span class="text-xs font-bold text-blue-400 bg-black/50 px-2 py-1 rounded">Landmark</span>
-                                <p class="text-white font-bold text-lg mt-1">타이페이 101 전망대 뷰</p>
                             </div>
                         </div>
                     </div>
@@ -287,7 +273,7 @@
             </div>
         </section>
 
-        <!-- Pre-Travel Guide -->
+        <!-- Pre-Travel & Weather Guide -->
         <section id="pretravel" class="py-20 bg-slate-50">
             <div class="container mx-auto px-4">
                 <div class="max-w-5xl mx-auto mb-12 text-center">
@@ -331,6 +317,82 @@
                             <li><strong>환전:</strong> 대만 달러(TWD) 준비</li>
                             <li>야시장 등에서 현금 사용이 많습니다.</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ★ NEW: Safety & Etiquette Section (Added) -->
+        <section id="safety" class="py-20 bg-amber-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <span class="text-red-600 font-bold tracking-wider uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Safety First</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2">사북고 안전 & 에티켓 수칙</h2>
+                    <p class="text-slate-600 mt-2">즐거운 여행을 위해 반드시 지켜야 할 5가지 약속</p>
+                </div>
+
+                <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-amber-100">
+                    <div class="grid md:grid-cols-2">
+                        <!-- Left: Safety Rules List -->
+                        <div class="p-8 md:p-10 flex flex-col justify-center">
+                            <ul class="space-y-6">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mr-4">
+                                        <i class="fa-solid fa-bus"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-slate-800">전세버스 안전벨트 필수</h4>
+                                        <p class="text-slate-600 text-sm mt-1">이동 중에는 반드시 착용해야 하며, <span class="text-red-500 font-bold">미착용 시 현지 경찰 단속 및 벌금</span> 대상입니다.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mr-4">
+                                        <i class="fa-solid fa-train-subway"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-slate-800">지하철(MRT) 취식 절대 금지</h4>
+                                        <p class="text-slate-600 text-sm mt-1">대만 지하철(노란 선 안쪽)에서는 껌, 사탕, <span class="text-red-500 font-bold">물 한 모금도 마시면 안 됩니다.</span> (최대 30만원 벌금)</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mr-4">
+                                        <i class="fa-solid fa-people-group"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-slate-800">지우펀 인파 주의 (영상 필독)</h4>
+                                        <p class="text-slate-600 text-sm mt-1">지우펀은 사람이 매우 많아 한순간에 일행을 놓칩니다. <span class="font-bold underline">절대 단독 행동 금지, 조별 이동</span>을 준수하세요.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl mr-4">
+                                        <i class="fa-solid fa-building-columns"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-slate-800">박물관 관람 매너</h4>
+                                        <p class="text-slate-600 text-sm mt-1">국립고궁박물관 내 정숙 유지. <span class="font-bold text-amber-600">A3 사이즈 이상의 백팩/가방</span>은 반입 불가하므로 보관소에 맡겨야 합니다.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-xl mr-4">
+                                        <i class="fa-solid fa-plug"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-slate-800">110V 전압 (돼지코)</h4>
+                                        <p class="text-slate-600 text-sm mt-1">한국 전자제품 플러그가 맞지 않습니다. <span class="font-bold">110V 어댑터(돼지코)</span>를 개인별로 꼭 챙겨주세요.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Right: Warning Video (Shorts) -->
+                        <div class="bg-black flex items-center justify-center p-4">
+                            <div class="w-full h-full flex flex-col items-center justify-center text-center">
+                                <h4 class="text-white font-bold mb-4 text-lg"><i class="fa-solid fa-eye animate-pulse text-red-500"></i> 현장상황: 지우펀 인파 실화?</h4>
+                                <div class="relative w-full max-w-[320px] aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700">
+                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                <p class="text-slate-400 text-xs mt-3">* 좁은 계단길에서 밀거나 장난치면 대형 사고로 이어집니다.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -484,7 +546,7 @@
             }, { threshold: 0.15 });
             sections.forEach(section => observer.observe(section));
             
-            // Schedule Data (Updated based on PDF)
+            // Schedule Data
             const scheduleData = {
                 day1: {
                     title: 'DAY 1: 5월 26일 (화) - 설렘의 시작',
@@ -580,7 +642,8 @@
                 { id: 'meds', text: '개인 상비약 (멀미약, 소화제)' },
                 { id: 'battery', text: '보조배터리 (기내 반입)' },
                 { id: 'tissues', text: '물티슈/손수건 (땀/습기)' },
-                { id: 'shoes', text: '편한 운동화 (많이 걸음)' }
+                { id: 'shoes', text: '편한 운동화 (많이 걸음)' },
+                { id: 'data', text: '유심/로밍 신청 확인' }
             ];
 
             checklistItems.forEach(item => {
