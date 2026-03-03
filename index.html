@@ -1,759 +1,1077 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
 <head>
-    <!-- 🚨 Google Analytics (GA4) - Tourmaker 통합 관리 -->
+    <!-- 🚨 Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-JLH9GD9SVR');
     </script>
-    <!-- // Google Analytics 끝 -->
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 사북고등학교 대만 수학여행: Smart Guidebook</title>
+    <title>[사북고] 대만 역사문화탐방 4일 - 스마트 가이드</title>
+    
+    <!-- SEO & Open Graph (카톡 공유 시 썸네일) -->
+    <meta name="description" content="2026 사북고등학교 대만 3박 4일 역사문화탐방 공식 스마트 가이드북">
+    <meta property="og:title" content="[사북고] 🇹🇼 대만 역사문화탐방 가이드북">
+    <meta property="og:description" content="학부모님과 학생들에게 공유드리는 상세 일정 및 교육 프로그램 안내입니다.">
+    <!-- 웹페이지 내 이미지를 og:image로 무조건 사용 -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1470004914212-05527e49370b?q=80&w=1920&auto=format&fit=crop">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS (Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
     <style>
-        /* [Fix 1] Body 배경색 충돌 해결 */
-        body { font-family: 'Noto Sans KR', sans-serif; color: #1e293b; }
-        
-        /* [Fix 2] 애니메이션 키프레임 정의 */
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: none; } 
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .hero-bg { 
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1470004914212-05527e49370b?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
-        .animate-fade-in { 
-            animation: fadeIn 0.4s ease-out forwards; 
+        @media (max-width: 768px){ .hero-bg { background-attachment: scroll; } }
+        #map { height: 500px; width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 10; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        section { scroll-margin-top: 80px; }
+        
+        /* Map Customization */
+        .custom-icon div {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .custom-icon div:hover {
+            transform: scale(1.1);
+            z-index: 100;
+        }
+        
+        /* Timeline dot */
+        .timeline-dot {
+            position: absolute;
+            left: -25px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--tw-ring-color);
+            background-color: var(--tw-bg-color);
         }
 
-        /* Hero Background - Jiufen Lanterns */
-        .hero-bg-taiwan { 
-            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url('https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRx1qsxz8owmAzPeDg7i3VStkn2sxGxKJ0BCsHruBNyZknQWj1dAxtFoVGD4AHEcdf8r75EkQLJUuFb12U6i-BJm_qz983wj41FlwNCOSWj3Vesnck');
-            background-size: cover;
-            background-position: center;
-        } 
-        
-        /* Interactive Elements */
-        .nav-link { transition: all 0.3s; }
-        .nav-link:hover, .nav-link.active { color: #d97706; border-bottom-color: #d97706; } /* Amber-600 */
-        
-        /* [Fix 3] 탭 버튼 Active 스타일 CSS 통합 */
-        .tab-btn { transition: all 0.3s; }
-        .tab-btn.active { background-color: #d97706; color: white; border-color: #d97706; }
-        
-        /* Timeline Styling */
-        .timeline-item::before { content: ''; position: absolute; left: 11px; top: 12px; bottom: -12px; width: 2px; background-color: #cbd5e1; }
-        .timeline-item:last-child::before { display: none; }
-        
-        html { scroll-behavior: smooth; }
-        .hover-zoom { transition: transform 0.3s ease; }
-        .hover-zoom:hover { transform: scale(1.02); }
-
-        /* Play Button Overlay */
-        .play-overlay {
-            background: rgba(0, 0, 0, 0.4);
-            transition: all 0.3s;
-        }
-        .group:hover .play-overlay {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .play-icon {
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .group:hover .play-icon {
-            transform: scale(1.2);
-        }
-
-        /* Yellow Note Pad Style */
-        .notepad {
-            background-color: #fef9c3; /* Yellow-100 */
-            background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 100% 2rem;
-            line-height: 2rem;
-            font-family: 'Noto Sans KR', sans-serif;
-            border-left: 4px solid #f59e0b; /* Amber-500 */
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-        }
-        .notepad:focus {
-            outline: none;
-            background-color: #fef08a; /* Yellow-200 */
+        /* Print Settings for A4 format */
+        @media print {
+            @page { size: A4; margin: 15mm; }
+            body { background-color: white !important; }
+            a[href]:after { content: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            table tr { page-break-inside: avoid; break-inside: avoid; }
+            #print-area td { line-height: 1.6; }
         }
     </style>
 </head>
-<body class="antialiased bg-slate-50">
+<body class="antialiased pb-20 md:pb-0 print:pb-0 print:bg-white">
 
-    <!-- Header / Navigation -->
-    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Tourmaker Logo & D-Day -->
-                <div class="flex-shrink-0 flex items-center gap-3 max-w-[70%]">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker Logo" class="h-8 w-auto flex-shrink-0">
-                    <!-- D-Day Counter Badge -->
-                    <div id="d-day-badge" class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md whitespace-nowrap overflow-hidden text-ellipsis">
-                        Loading...
-                    </div>
+    <!-- Screen Content Wrapper (Hidden on Print) -->
+    <div class="print:hidden">
+        
+        <!-- Header (Sticky Navigation) -->
+        <header class="bg-white/95 backdrop-blur-md shadow-md sticky top-0 z-50 transition-all duration-300">
+            <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3 shrink-0">
+                    <a href="http://tourmaker.kr" target="_blank">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker" class="h-8">
+                    </a>
+                    <span id="d-day-badge" class="hidden bg-amber-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse"></span>
                 </div>
                 
-                <!-- Mobile Menu Button (Hamburger) -->
-                <div class="md:hidden">
-                    <a href="#mynote" class="text-amber-600 font-bold text-sm mr-2"><i class="fa-solid fa-pen-to-square"></i> MY노트</a>
-                </div>
-
-                <!-- Desktop Nav -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4 text-sm font-medium">
-                        <a href="#home"        class="nav-link px-3 py-2 border-b-2 border-transparent active">소개</a>
-                        <a href="#highlight"   class="nav-link px-3 py-2 border-b-2 border-transparent">핵심 탐방</a>
-                        <a href="#videos"      class="nav-link px-3 py-2 border-b-2 border-transparent">미리보기</a>
-                        <a href="#timeline"    class="nav-link px-3 py-2 border-b-2 border-transparent">일정</a>
-                        <a href="#safety"      class="nav-link px-3 py-2 border-b-2 border-transparent text-red-600 font-bold">안전/준비</a>
-                        <a href="#mynote"      class="nav-link px-3 py-2 border-b-2 border-transparent text-amber-600 font-bold"><i class="fa-solid fa-pen-to-square"></i> MY 노트</a>
+                <!-- Desktop & Mobile Scrollable Menu -->
+                <div class="flex-1 overflow-x-auto no-scrollbar ml-4 md:ml-8">
+                    <div class="flex items-center space-x-1 md:space-x-6 whitespace-nowrap pr-4">
+                        <a href="#home" class="px-3 py-2 text-sm font-bold text-slate-600 hover:text-amber-600 hover:bg-slate-50 rounded-lg transition-colors">홈</a>
+                        <a href="#highlights" class="px-3 py-2 text-sm font-bold text-amber-600 hover:text-amber-800 hover:bg-amber-50 rounded-lg transition-colors"><i class="fa-solid fa-star mr-1"></i>핵심포인트</a>
+                        <a href="#flight" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-amber-600 hover:bg-slate-50 rounded-lg transition-colors">항공/공항</a>
+                        <a href="#visit-taiwan" class="px-3 py-2 text-sm font-medium text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors"><i class="fa-solid fa-passport mr-1"></i>입국준비</a>
+                        <a href="#map-section" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-amber-600 hover:bg-slate-50 rounded-lg transition-colors">여행동선</a>
+                        <a href="#schedule" class="px-3 py-2 text-sm font-bold text-amber-600 hover:bg-slate-50 rounded-lg transition-colors"><i class="fa-solid fa-calendar-check mr-1"></i>상세일정</a>
+                        <a href="#hotel" class="px-3 py-2 text-sm font-bold text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"><i class="fa-solid fa-bed mr-1"></i>숙소정보</a>
+                        <a href="#video" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-amber-600 hover:bg-slate-50 rounded-lg transition-colors">영상자료</a>
+                        <a href="#check" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-amber-600 hover:bg-slate-50 rounded-lg transition-colors">준비물</a>
+                        <a href="#contact" class="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">비상연락망</a>
                     </div>
                 </div>
+
+                <button onclick="shareLink()" class="shrink-0 p-2 text-slate-500 hover:text-amber-600 ml-2" title="일정표 공유하기"><i class="fa-solid fa-share-nodes text-xl"></i></button>
+            </nav>
+        </header>
+
+        <!-- Hero -->
+        <section id="home" class="hero-bg min-h-[60vh] flex items-center justify-center text-center px-4">
+            <div class="animate-fade-in-up text-white">
+                <span class="bg-amber-600/90 px-6 py-2 rounded-full text-lg md:text-xl font-bold mb-6 inline-block border border-white/20 shadow-lg tracking-wide">사북고등학교 해외문화탐방</span>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg font-[Nanum Myeongjo]">설렘 가득한 대만,<br><span class="text-yellow-400 font-bold">역사와 낭만의 시간 속으로</span></h1>
+                <p class="text-lg md:text-xl text-slate-100 font-medium tracking-wide bg-black/30 inline-block px-4 py-1 rounded-lg mt-2">2026.05.26(화) ~ 05.29(금) | 3박 4일</p>
             </div>
-        </nav>
-        <!-- Mobile Secondary Nav -->
-        <div class="md:hidden overflow-x-auto whitespace-nowrap bg-slate-50 border-b border-slate-200">
-            <div class="flex px-4 py-2 space-x-4 text-xs font-medium text-slate-600">
-                <a href="#home" class="block">홈</a>
-                <a href="#highlight" class="block">핵심</a>
-                <a href="#timeline" class="block">일정</a>
-                <a href="#safety" class="block text-red-600 font-bold">안전/준비</a>
-                <a href="#mynote" class="block text-amber-600 font-bold">★MY노트</a>
-            </div>
-        </div>
-    </header>
+        </section>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero-bg-taiwan text-white text-center flex items-center justify-center min-h-[85vh] relative">
-            <div class="container mx-auto px-4 z-10">
-                <p class="text-xl font-semibold text-yellow-400 mb-2 drop-shadow-md">2026 사북고등학교 해외문화탐방</p>
-                <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight drop-shadow-lg">
-                    설렘 가득한 대만,<br>역사와 낭만의 시간 속으로
-                </h1>
-                
-                <div class="mt-4 max-w-3xl mx-auto bg-black/40 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                    <h2 class="text-2xl font-bold mb-3">학생 중심의 안전하고 특별한 여정</h2>
-                    <p class="text-lg text-slate-100">
-                        <span class="text-yellow-400 font-bold">국립고궁박물관</span>의 역사, 
-                        <span class="text-yellow-400 font-bold">펑리수 만들기</span> 체험, 
-                        그리고 <span class="text-green-300 font-bold">스펀 천등 날리기</span>까지.
-                    </p>
+        <!-- Highlights Section -->
+        <section id="highlights" class="py-12 bg-white -mt-8 rounded-t-3xl relative z-10 shadow-[0_-5px_20px_rgba(0,0,0,0.1)]">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10">
+                    <span class="text-amber-600 font-black tracking-widest text-xs uppercase">SPECIAL POINTS</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mt-2">사북고등학교만을 위한<br class="md:hidden"/> 3가지 특별한 약속</h2>
                 </div>
                 
-                <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 text-lg font-bold">
-                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-lg">
-                        🗓️ 2026.05.26 (화) ~ 05.29 (금)
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-4 text-3xl">🍍</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">곽원익 펑리수 체험</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            보는 여행에서 <strong>만드는 여행</strong>으로! 100년 전통의 곽원익 박물관에서 대만 대표 간식인 <span class="text-amber-600 font-bold">펑리수를 직접 만들고 맛보는</span> 체험식 교육 프로그램입니다.
+                        </p>
+                        <span class="inline-block bg-amber-500 text-white text-xs px-2 py-1 rounded font-bold">참여형 DIY 클래스</span>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-lg">
-                        ✈️ 대한항공 (KE) / 인천 T2 이용
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center mb-4 text-3xl">🏛️</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">역사와 랜드마크</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            중국 5천년 역사의 보물창고인 <span class="text-teal-600 font-bold">국립고궁박물관</span> 관람과 대만의 자존심인 <span class="text-teal-600 font-bold">101 타워 전망대</span> 등정을 통해 과거와 현재를 동시에 조망합니다.
+                        </p>
+                        <span class="inline-block bg-teal-600 text-white text-xs px-2 py-1 rounded font-bold">세계 4대 박물관</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 text-3xl">🏮</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">소원 천등 날리기</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            기찻길 마을 <strong>스펀</strong>에서 학업과 진로의 소원을 적은 천등을 하늘 높이 날려보내고, 센과 치히로의 배경이 된 <strong>지우펀</strong>에서 이국적인 낭만을 즐깁니다.
+                        </p>
+                        <span class="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded font-bold">4인 1조 소원 기원</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Highlights Section -->
-        <section id="highlight" class="py-20 bg-white">
+        <!-- Flight & Airport Guide -->
+        <section id="flight" class="py-12 bg-slate-50 border-t border-slate-100">
             <div class="container mx-auto px-4">
-                <div class="text-center mb-16">
-                    <span class="text-amber-600 font-bold tracking-wider uppercase">Key Highlights</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-2">사북고 대만 탐방 3대 포인트</h2>
+                <div class="text-center mb-8">
+                    <span class="text-blue-600 font-black tracking-widest text-xs uppercase">FLIGHT & AIRPORT</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">항공 스케줄 및 공항 안내</h2>
                 </div>
-                <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-                      <!-- Card 1: Experience -->
-                      <div class="bg-amber-50 border border-amber-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col">
-                        <div class="bg-amber-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🍍</div>
-                        <h3 class="text-2xl font-bold mb-3 text-slate-800">곽원익 펑리수 체험</h3>
-                        <p class="text-slate-600 flex-grow mb-4">
-                            보는 여행에서 <strong>만드는 여행</strong>으로! 100년 전통의 곽원익 박물관에서 대만 대표 간식 펑리수를 직접 만들고 맛보는 체험입니다.
-                        </p>
-                        <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
-                            <li>✔️ 2시간 소요 DIY 클래스</li>
-                            <li>✔️ 내가 만든 펑리수 포장 & 시식</li>
-                        </ul>
+
+                <!-- Flight Information -->
+                <div class="max-w-4xl mx-auto mb-10">
+                    <div class="bg-white rounded-2xl border border-blue-100 shadow-md p-6">
+                        <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                            <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 w-full md:w-1/2 text-center">
+                                <span class="text-xs bg-blue-600 text-white px-3 py-1 rounded-full font-bold mb-3 inline-block">출국 5.26(화)</span>
+                                <p class="font-black text-xl text-slate-800 mb-1">대한항공 KE2021</p>
+                                <p class="text-slate-600 font-medium text-lg">인천 10:30 <i class="fa-solid fa-plane text-blue-400 mx-2"></i> 타오위안 12:10</p>
+                            </div>
+                            <div class="bg-red-50 border border-red-100 rounded-xl p-5 w-full md:w-1/2 text-center">
+                                <span class="text-xs bg-red-600 text-white px-3 py-1 rounded-full font-bold mb-3 inline-block">귀국 5.29(금)</span>
+                                <p class="font-black text-xl text-slate-800 mb-1">대한항공 KE2022</p>
+                                <p class="text-slate-600 font-medium text-lg">타오위안 13:20 <i class="fa-solid fa-plane text-red-400 mx-2"></i> 인천 16:50</p>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Card 2: History -->
-                    <div class="bg-green-50 border border-green-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col">
-                        <div class="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🏛️</div>
-                        <h3 class="text-2xl font-bold mb-3 text-slate-800">역사와 랜드마크</h3>
-                        <p class="text-slate-600 flex-grow mb-4">
-                            중국 5천년 역사의 보물창고 <strong>국립고궁박물관</strong>과 대만의 자존심 <strong>101 타워 전망대</strong>에서 과거와 현재를 조망합니다.
-                        </p>
-                        <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
-                            <li>✔️ 세계 4대 박물관 관람</li>
-                            <li>✔️ 101 타워 전망대 등정</li>
-                        </ul>
+                </div>
+
+                <!-- Airport Guide -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-md p-6 md:p-8">
+                        <h3 class="font-bold text-slate-800 text-lg mb-6 flex items-center gap-2">
+                            <i class="fa-solid fa-building-user text-green-600"></i> 사북 출발 및 인천공항(T2) 이용 안내
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-green-50 rounded-xl p-4 border border-green-100 relative group">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md">1</div>
+                                <div class="mb-2"><i class="fa-solid fa-bus text-2xl text-green-600"></i></div>
+                                <h4 class="font-bold text-slate-800 text-sm">사북 출발</h4>
+                                <p class="text-xs text-slate-600 mt-1">새벽 04:00 학교 집결<br>공항으로 단체 이동합니다.</p>
+                            </div>
+                            <div class="bg-green-50 rounded-xl p-4 border border-green-100 relative">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</div>
+                                <div class="mb-2"><i class="fa-solid fa-users-rectangle text-2xl text-green-600"></i></div>
+                                <h4 class="font-bold text-slate-800 text-sm">제2여객터미널</h4>
+                                <p class="text-xs text-slate-600 mt-1">대한항공은 <span class="font-bold text-blue-600">T2</span>입니다.<br>07:30 공항 미팅을 진행합니다.</p>
+                            </div>
+                            <div class="bg-green-50 rounded-xl p-4 border border-green-100 relative">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</div>
+                                <div class="mb-2"><i class="fa-solid fa-passport text-2xl text-green-600"></i></div>
+                                <h4 class="font-bold text-slate-800 text-sm">보안 검색</h4>
+                                <p class="text-xs text-slate-600 mt-1">100ml 초과 액체류 금지.<br>보조배터리는 기내 반입 필수.</p>
+                            </div>
+                            <div class="bg-green-50 rounded-xl p-4 border border-green-100 relative">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md">4</div>
+                                <div class="mb-2"><i class="fa-solid fa-door-open text-2xl text-green-600"></i></div>
+                                <h4 class="font-bold text-slate-800 text-sm">탑승 게이트</h4>
+                                <p class="text-xs text-slate-600 mt-1"><span class="text-red-600 font-bold">출발 30분 전 도착!</span><br>면세구역에서는 시간 엄수.</p>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Card 3: Memory -->
-                    <div class="bg-blue-50 border border-blue-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col">
-                        <div class="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-6 text-2xl">🏮</div>
-                        <h3 class="text-2xl font-bold mb-3 text-slate-800">소원 천등 날리기</h3>
-                        <p class="text-slate-600 flex-grow mb-4">
-                            기찻길 마을 <strong>스펀</strong>에서 우리의 꿈과 소원을 적은 천등을 하늘 높이 날려보내고, <strong>지우펀</strong>의 낭만을 즐깁니다.
-                        </p>
-                        <ul class="text-sm space-y-2 text-slate-700 font-medium bg-white p-4 rounded-lg border">
-                            <li>✔️ 4인 1조 천등 날리기 체험</li>
-                            <li>✔️ 예류 지질공원 기암괴석 탐방</li>
-                        </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visit Taiwan Web (e-Gate) Section -->
+        <section id="visit-taiwan" class="py-12 bg-teal-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-5xl mx-auto text-center mb-8">
+                    <span class="inline-block bg-teal-600 text-white text-xs px-3 py-1 rounded-full font-bold shadow-sm mb-3">대만 입국 준비</span>
+                    <h2 class="text-3xl font-bold text-slate-800">온라인 입국신고서 (Arrival Card)</h2>
+                    <p class="text-slate-600 mt-2">사전 등록을 통해 기내에서 종이 신고서를 작성할 필요 없이 <span class="text-teal-600 font-bold">빠른 입국</span>이 가능합니다.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-teal-100 overflow-hidden">
+                    <div class="grid md:grid-cols-2">
+                        <div class="p-8 flex flex-col justify-center items-start">
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">📱 스마트한 대만 입국 방법</h3>
+                            <ol class="space-y-4 text-sm text-slate-600 mb-8 text-left w-full">
+                                <li class="flex gap-3 items-start">
+                                    <span class="bg-teal-100 text-teal-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                                    <span>출국 전 대만 이민서 공식 홈페이지에 접속합니다.</span>
+                                </li>
+                                <li class="flex gap-3 items-start">
+                                    <span class="bg-teal-100 text-teal-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                                    <span>여권 정보, 비행기 편명(KE2021), 투숙 호텔을 영문으로 입력합니다.</span>
+                                </li>
+                                <li class="flex gap-3 items-start">
+                                    <span class="bg-teal-100 text-teal-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                                    <span>제출 완료 후 현지 공항에서 여권만 제시하면 입국 심사가 진행됩니다. (단체 수속 안내를 따릅니다)</span>
+                                </li>
+                            </ol>
+                            <a href="https://niaspeedy.immigration.gov.tw/webacard/" target="_blank" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl text-center shadow-md transition-colors flex items-center justify-center gap-2">
+                                온라인 입국신고서 작성하기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                        <div class="bg-teal-50 p-8 flex items-center justify-center border-l border-teal-100">
+                            <div class="text-center">
+                                <div class="bg-white p-4 rounded-xl shadow-sm inline-block mb-4 relative">
+                                    <i class="fa-solid fa-laptop-file text-8xl text-slate-800"></i>
+                                    <div class="absolute -top-2 -right-2 bg-teal-600 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-bounce">온라인</div>
+                                </div>
+                                <p class="text-xs text-slate-500 font-medium">원활한 수속을 위해 학교 안내에 따라<br>가정에서 미리 등록을 권장합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map -->
+        <section id="map-section" class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">한눈에 보는 대만 여정</h2>
+                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 그 날의 주요 이동 동선을 상세히 확인해 보세요.</p>
+                </div>
+
+                <!-- 일자별 맵 컨트롤 버튼 -->
+                <div class="flex flex-wrap justify-center gap-2 mb-6 px-2" id="map-controls">
+                    <button onclick="changeMapRoute('all')" class="map-btn active px-5 py-2 rounded-full border border-slate-300 bg-slate-800 text-white text-sm font-bold transition shadow-md">전체 여정</button>
+                    <button onclick="changeMapRoute('day1')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 text-sm font-bold transition">1일차</button>
+                    <button onclick="changeMapRoute('day2')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 text-sm font-bold transition">2일차</button>
+                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 text-sm font-bold transition">3일차</button>
+                    <button onclick="changeMapRoute('day4')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 text-sm font-bold transition">4일차</button>
+                </div>
+
+                <div class="max-w-5xl mx-auto border border-slate-200 rounded-2xl p-1 shadow-lg bg-white relative">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Schedule -->
+        <section id="schedule" class="py-16 bg-slate-50 border-t border-slate-200">
+            <div class="container mx-auto px-4">
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-10 relative">
+                        <span class="inline-block bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold shadow-sm mb-3">EDUCATION & TOUR</span>
+                        <h2 class="text-3xl font-bold text-slate-800">일자별 상세 교육 일정</h2>
+                        
+                        <button onclick="window.print()" class="mt-6 md:mt-0 md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mx-auto md:mx-0 active:scale-95">
+                            <i class="fa-solid fa-print"></i> 일정표 인쇄하기
+                        </button>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex overflow-x-auto no-scrollbar gap-2 mb-8 justify-start md:justify-center px-2">
+                        <button class="tab-btn-schedule active shrink-0 px-6 py-3 rounded-2xl border-2 border-amber-600 bg-amber-600 text-white font-bold text-sm transition shadow-md" onclick="openScheduleTab(event, 'day1'); changeMapRoute('day1')">1일차 (5.26)</button>
+                        <button class="tab-btn-schedule shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-slate-50" onclick="openScheduleTab(event, 'day2'); changeMapRoute('day2')">2일차 (5.27)</button>
+                        <button class="tab-btn-schedule shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-slate-50" onclick="openScheduleTab(event, 'day3'); changeMapRoute('day3')">3일차 (5.28)</button>
+                        <button class="tab-btn-schedule shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-slate-50" onclick="openScheduleTab(event, 'day4'); changeMapRoute('day4')">4일차 (5.29)</button>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                        
+                        <!-- Day 1 -->
+                        <div id="sched-day1" class="tab-content-schedule animate-fade-in-up p-6 md:p-10">
+                            <div class="flex items-center gap-4 mb-8 border-b pb-6">
+                                <span class="text-4xl bg-amber-100 p-4 rounded-2xl">🛫</span>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-slate-800">설렘의 시작, 대만 입국 및 랜드마크 탐방</h3>
+                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 사북 → 인천 → 타오위안 → 타이베이 시내</p>
+                                </div>
+                            </div>
+
+                            <div class="relative border-l-2 border-slate-200 ml-4 pl-8 space-y-8">
+                                <div class="relative">
+                                    <div class="timeline-dot bg-red-600 ring-red-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏫 04:00 정선 사북고 출발</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        새벽 학교에 집결하여 전용 버스로 인천국제공항 제2터미널(T2)로 이동합니다. (07:30 공항 미팅 예정)
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-amber-600 ring-amber-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">✈️ 10:30 인천 출발 / 12:10 타오위안 도착</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        대한항공(KE2021) 탑승. 대만 도착 후 현지식(우육면)으로 점심 식사를 진행합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-teal-500 ring-teal-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏛️ 국립고궁박물관</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        세계 4대 박물관 중 하나로, 약 70만 점의 중국 역대 왕조의 유물을 소장하고 있습니다. '취옥백채(배추)', '육형석(동파육)' 등 대표 유물을 관람합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-amber-500 ring-amber-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">💂 충렬사 근위병 교대식</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        항일 투쟁과 국공 내전에서 희생된 영령을 모신 곳으로, 절도 있고 위엄 있는 근위병 교대식을 관람합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-blue-500 ring-blue-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏙️ 101 타워 전망대</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        대만의 랜드마크인 타이베이 101의 89층 전망대에 초고속 엘리베이터를 타고 올라 타이베이 시내를 한눈에 조망합니다. 지진과 강풍을 견디는 거대한 댐퍼(Damper)의 원리도 배웁니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 투숙 및 휴식</h4>
+                                    <p class="text-slate-500 text-sm mt-2">현지식(샤브샤브 석식) 후 호텔 체크인 (알로프트 베이터우)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Day 2 -->
+                        <div id="sched-day2" class="tab-content-schedule hidden animate-fade-in-up p-6 md:p-10">
+                            <div class="flex items-center gap-4 mb-8 border-b pb-6">
+                                <span class="text-4xl bg-orange-100 p-4 rounded-2xl">🍍</span>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-slate-800">문화 체험과 항구도시의 낭만</h3>
+                                    <p class="text-orange-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 타이베이 펑리수 체험 → 단수이</p>
+                                </div>
+                            </div>
+
+                            <div class="relative border-l-2 border-slate-200 ml-4 pl-8 space-y-8">
+                                <div class="relative">
+                                    <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">👨‍🍳 곽원익 펑리수 만들기 체험</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed mb-3">
+                                        100년이 넘는 전통을 자랑하는 곽원익 제과 박물관에서 <strong>대만의 대표 특산품인 펑리수(파인애플 케이크)를 학생들이 직접 반죽하고 구워보는 DIY 체험</strong>을 진행합니다.
+                                    </p>
+                                    <div class="bg-orange-50 border-l-4 border-orange-500 p-3 rounded-r-lg">
+                                        <span class="text-orange-700 font-bold text-xs"><i class="fa-solid fa-check"></i> 소요시간 약 2시간 / 본인이 만든 펑리수는 포장하여 가져갑니다.</span>
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-blue-500 ring-blue-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏰 홍마오청 (단수이)</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        낭만의 항구도시 단수이로 이동합니다. 스페인, 네덜란드, 영국 등의 영향을 받은 붉은 벽돌의 요새 '홍마오청'을 거닐며 대만의 근대 식민 역사를 둘러봅니다. 영화 '말할 수 없는 비밀'의 촬영지로도 유명합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-cyan-500 ring-cyan-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">⛴️ 단수이 옛거리 & 전통 유람선</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        단수이 강변을 따라 늘어선 라오제(옛거리)에서 대왕카스테라 등 현지 간식을 맛보고, 단수이와 맞은편 빠리를 연결하는 전통 유람선에 탑승하여 여유로운 풍경을 감상합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 귀환 및 휴식</h4>
+                                    <p class="text-slate-500 text-sm mt-2">호텔식(조식) / 현지식(중/석식-몽골리안 BBQ)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Day 3 -->
+                        <div id="sched-day3" class="tab-content-schedule hidden animate-fade-in-up p-6 md:p-10">
+                            <div class="flex items-center gap-4 mb-6 border-b pb-6">
+                                <span class="text-4xl bg-amber-100 p-4 rounded-2xl">🏮</span>
+                                <div>
+                                    <h3 class="font-bold text-2xl text-slate-800">자연의 신비와 소원 기원 (예스지)</h3>
+                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 예류 지질공원 → 스펀 → 지우펀 → 야시장</p>
+                                </div>
+                            </div>
+
+                            <div class="relative border-l-2 border-slate-200 ml-4 pl-8 space-y-8">
+                                <div class="relative">
+                                    <div class="timeline-dot bg-teal-600 ring-teal-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🗿 예류 국립해양 지질공원</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        오랜 세월 해풍과 파도에 깎여 만들어진 독특한 기암괴석들이 모여 있는 지질공원입니다. 가장 유명한 '여왕머리 바위'를 비롯해 자연이 빚어낸 경이로운 조각품을 관찰합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-red-500 ring-red-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🙏 스펀 천등 날리기</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        기차가 아슬아슬하게 지나가는 철길 위에서, 4인 1조로 커다란 천등의 4면에 학업, 건강, 우정 등의 소원을 직접 붓으로 적고 하늘 높이 날려 보내는 특별한 추억을 만듭니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-amber-600 ring-amber-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏮 지우펀</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        산비탈을 따라 이어진 좁은 계단과 골목마다 홍등이 빛나는 낭만적인 마을입니다. 애니메이션 '센과 치히로의 행방불명'의 모티브가 된 찻집 수취루를 배경으로 사진을 남기며 대만의 정취를 느낍니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-blue-800 ring-blue-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🌙 스린 야시장</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        타이베이 시내 최대 규모의 야시장입니다. 학생들끼리 조별로 안전하게 이동하며 지파이, 망고빙수 등 다양한 대만의 길거리 음식 문화를 활기차게 경험합니다.
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 귀환 및 휴식</h4>
+                                    <p class="text-slate-500 text-sm mt-2">호텔식(조식) / 현지식(중/석식-무제한 삼겹살)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Day 4 -->
+                        <div id="sched-day4" class="tab-content-schedule hidden animate-fade-in-up p-6 md:p-10 text-center">
+                            <div class="flex items-center gap-4 mb-8 border-b pb-6 justify-center">
+                                <span class="text-4xl bg-green-100 p-4 rounded-2xl">🇰🇷</span>
+                                <div class="text-left">
+                                    <h3 class="font-bold text-2xl text-slate-800">아쉬움을 뒤로하고, 안전한 귀국길</h3>
+                                    <p class="text-green-600 font-medium text-sm mt-1"><i class="fa-solid fa-plane"></i> 타이베이 타오위안 → 인천 → 사북</p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-slate-600 mb-8 leading-relaxed text-lg">
+                                3박 4일간 넓은 세상에서 호연지기를 기른 사북고등학교 학생들.<br>
+                                이 특별한 경험이 미래를 향한 소중한 자양분이 되기를 바랍니다.
+                            </p>
+                            
+                            <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 inline-block text-left max-w-md w-full shadow-sm">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 shadow-sm"><i class="fa-solid fa-tree"></i></div>
+                                    <div>
+                                        <p class="text-xl font-bold text-slate-800">오전</p>
+                                        <p class="text-sm text-slate-500">호텔 조식 후 스린관저(장제스 총통 정원) 산책</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shadow-sm"><i class="fa-solid fa-plane-departure"></i></div>
+                                    <div>
+                                        <p class="text-xl font-bold text-slate-800">13:20</p>
+                                        <p class="text-sm text-slate-500">타오위안 공항 출발 (대한항공 KE2022)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600 shadow-sm"><i class="fa-solid fa-bus"></i></div>
+                                    <div>
+                                        <p class="text-xl font-bold text-slate-800">16:50 이후</p>
+                                        <p class="text-sm text-slate-500">인천공항 도착 및 전용버스로 학교 복귀/해산</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hotel Information Section -->
+        <section id="hotel" class="py-16 bg-white border-t border-slate-200">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-10">
+                    <span class="text-indigo-600 font-black tracking-widest text-xs uppercase">ACCOMMODATION</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">예정 숙소 안내</h2>
+                    <p class="text-sm text-slate-500 mt-2">사북고 학생들의 안전하고 쾌적한 휴식을 책임질 타이베이 호텔입니다.</p>
+                </div>
+
+                <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Hotel Images -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-slate-100 relative group bg-slate-100 h-64 flex items-center justify-center">
+                            <!-- Placeholder image for hotel -->
+                            <img src="https://tse4.mm.bing.net/th/id/OIP.1IZX671eG3kY27MH-BzWigHaE8?w=474&h=379&c=7&p=0" alt="알로프트 베이터우 로비 및 외관" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105">
+                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">호텔 라운지/외관</div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden shadow-lg border border-slate-100 relative group bg-slate-100 h-48 flex items-center justify-center">
+                            <img src="https://tse2.mm.bing.net/th/id/OIP.U5SC2295dEErkC7963fvJwHaE7?w=474&h=379&c=7&p=0" alt="알로프트 베이터우 객실" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105">
+                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">객실 인테리어 (예시)</div>
+                        </div>
+                    </div>
+
+                    <!-- Hotel Info -->
+                    <div class="lg:col-span-7 flex flex-col h-full justify-between">
+                        <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl mb-6">
+                            <h3 class="font-bold text-indigo-900 text-lg">알로프트 타이베이 베이터우 (Aloft Taipei Beitou)</h3>
+                            <p class="text-sm text-indigo-700 mt-1">※ 메리어트(Marriott) 계열의 세련되고 감각적인 4성급 글로벌 체인 호텔입니다.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <p class="text-xs font-bold text-slate-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-location-dot text-indigo-500"></i> 위치 및 환경</p>
+                                <p class="text-sm text-slate-700 font-medium">베이터우역 도보권. 복잡한 중심가에서 벗어나 평온한 온천 지역에 위치합니다.</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <p class="text-xs font-bold text-slate-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-bed text-indigo-500"></i> 객실 타입</p>
+                                <p class="text-sm text-slate-700 font-medium">학생 2인 1실 (넓고 현대적인 디자인의 객실 배정)</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 md:col-span-2">
+                                <p class="text-xs font-bold text-slate-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-shield-halved text-indigo-500"></i> 부대 시설 및 특징</p>
+                                <p class="text-sm text-slate-700 font-medium leading-relaxed">
+                                    무료 Wi-Fi, 피트니스 센터, 레스토랑 및 바 라운지 구비. 깔끔한 위생 관리와 트렌디한 인테리어로 비즈니스 및 학생 단체 여행객에게 선호도가 매우 높습니다.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tourmaker Planner's Note -->
+                        <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-2xl border border-indigo-100 shadow-sm relative overflow-hidden mt-auto">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-100 rounded-full -mr-8 -mt-8 opacity-50"></div>
+                            <div class="flex gap-4 relative z-10">
+                                <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shrink-0 shadow-md">
+                                    <i class="fa-solid fa-lightbulb text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-indigo-900 text-sm mb-1">투어메이커 기획자 노트</h4>
+                                    <p class="text-sm text-slate-700 leading-relaxed">
+                                        일과 종료 후 학생들의 완벽한 휴식을 위해 시내 중심가의 번잡함 대신, 조용하고 안전한 베이터우 지역의 '알로프트' 브랜드를 수배했습니다. 검증된 글로벌 체인의 쾌적한 룸 컨디션이 다음 날 일정을 위한 최고의 재충전 공간이 될 것입니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Video Curation Section -->
-        <section id="videos" class="py-20 bg-slate-50 border-t">
+        <section id="video" class="py-16 bg-slate-900">
             <div class="container mx-auto px-4">
-                <div class="text-center mb-12">
-                    <span class="text-blue-600 font-bold tracking-wider uppercase">Preview Taiwan</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-2">영상으로 만나는 대만</h2>
-                    <p class="text-slate-500 mt-2">투어메이커가 엄선한 고화질 영상으로 여행의 설렘을 미리 느껴보세요.</p>
+                <div class="text-center mb-10 text-white">
+                    <span class="inline-block bg-white/20 text-white text-xs px-3 py-1 rounded-full font-bold mb-3 border border-white/30">PREVIEW 영상</span>
+                    <h2 class="text-3xl font-bold">🎬 영상으로 미리 만나는 대만</h2>
+                    <p class="text-slate-400 text-sm mt-3">투어메이커가 엄선한 고화질 영상으로 대만의 매력과 펑리수 체험을 미리 확인하세요.</p>
                 </div>
                 
-                <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-                    <!-- Video 1: Official Promo -->
-                    <!-- [Fix 5] YouTube 개인정보 보호 강화 (nocookie + referrerpolicy) -->
-                    <div class="bg-white p-4 rounded-2xl shadow-md">
-                        <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'ZmTvNm1R0HI')">
-                            <img src="https://img.youtube.com/vi/ZmTvNm1R0HI/maxresdefault.jpg" alt="Taiwan Tourism Video" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
-                            <div class="absolute inset-0 flex items-center justify-center play-overlay">
-                                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white play-icon">
-                                    <span class="text-white text-3xl ml-1">▶</span>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                <span class="text-xs font-bold text-yellow-400 bg-black/50 px-2 py-1 rounded">Official</span>
-                                <p class="text-white font-bold text-lg mt-1">대만관광청 공식 홍보영상 (2025)</p>
-                            </div>
+                <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
+                    <!-- Video 1 -->
+                    <div class="space-y-4">
+                        <div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border border-slate-700 bg-black relative">
+                            <iframe class="w-full h-full absolute top-0 left-0" src="https://www.youtube-nocookie.com/embed/ZmTvNm1R0HI" title="대만 홍보영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-1 rounded-full mb-2 inline-block">Official</span>
+                            <p class="text-white font-bold text-lg">대만관광청 공식 홍보영상</p>
                         </div>
                     </div>
-
-                    <!-- Video 2: Fengsu Making -->
-                    <div class="bg-white p-4 rounded-2xl shadow-md">
-                        <div class="relative aspect-video rounded-xl overflow-hidden bg-slate-900 cursor-pointer group" onclick="playVideo(this, 'hyF-G9LxE1E')">
-                            <img src="https://img.youtube.com/vi/hyF-G9LxE1E/maxresdefault.jpg" alt="Kuo Yuan Ye Fengsu DIY" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
-                            <div class="absolute inset-0 flex items-center justify-center play-overlay">
-                                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white play-icon">
-                                    <span class="text-white text-3xl ml-1">▶</span>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                <span class="text-xs font-bold text-green-400 bg-black/50 px-2 py-1 rounded">Activity</span>
-                                <p class="text-white font-bold text-lg mt-1">곽원익 펑리수 만들기 체험 (쿠킹클래스)</p>
-                            </div>
+                    <!-- Video 2 -->
+                    <div class="space-y-4">
+                        <div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border border-slate-700 bg-black relative">
+                            <iframe class="w-full h-full absolute top-0 left-0" src="https://www.youtube-nocookie.com/embed/hyF-G9LxE1E" title="펑리수 체험" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-green-400 bg-green-400/10 border border-green-400/30 px-2 py-1 rounded-full mb-2 inline-block">Activity</span>
+                            <p class="text-white font-bold text-lg">곽원익 펑리수 만들기 체험</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Timeline Section -->
-        <section id="timeline" class="py-20 bg-white">
+        <!-- Checklist & Memo -->
+        <section id="check" class="py-16 bg-white border-t border-slate-100">
             <div class="container mx-auto px-4">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-2">3박 4일 일정표</h2>
-                <p class="text-center text-slate-500 text-sm mb-10">※ 현지 사정 및 항공 스케줄에 따라 변경될 수 있습니다.</p>
+                <div class="text-center mb-10">
+                    <span class="text-amber-600 font-black tracking-widest text-xs uppercase">PREPARATION</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">준비물 체크리스트 & 메모</h2>
+                    <p class="text-sm text-slate-500 mt-2">잊지 말고 꼭 챙기세요! (작성 내용은 스마트폰에 자동 저장됩니다)</p>
+                </div>
                 
-                <!-- Tab Navigation -->
-                <div class="max-w-5xl mx-auto bg-slate-50 rounded-t-2xl shadow-sm border-b overflow-hidden flex flex-wrap">
-                    <!-- [Fix 3] 탭 버튼 Active CSS 제어 -->
-                    <button class="tab-btn active flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day1">DAY 1 (5/26)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day2">DAY 2 (5/27)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day3">DAY 3 (5/28)</button>
-                    <button class="tab-btn flex-1 py-4 font-bold text-sm md:text-base border-b-4 border-transparent hover:bg-slate-100" data-tab="day4">DAY 4 (5/29)</button>
+                <div class="max-w-5xl mx-auto mb-8 bg-sky-50 border border-sky-200 p-5 rounded-2xl flex items-start gap-4">
+                    <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-sky-500 text-2xl shrink-0">
+                        <i class="fa-solid fa-cloud-sun"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">5월 말 대만 날씨 및 옷차림 팁</h4>
+                        <p class="text-sm text-slate-600 mt-1 leading-relaxed">
+                            5월 하순의 대만은 <strong>본격적인 우기이자 초여름(평균 25℃~30℃) 날씨</strong>입니다. 덥고 습하므로 <strong>통풍이 잘되는 반팔 위주</strong>로 준비하시되, 비가 자주 오므로 <strong>휴대용 우산/우비</strong>가 필수입니다. 또한 실내 에어컨이 매우 강하게 가동되므로 <strong>얇은 바람막이/가디건</strong>을 꼭 챙기게 해주세요.
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Tab Content -->
-                <div class="max-w-5xl mx-auto bg-white rounded-b-2xl shadow-xl p-8 md:p-12 min-h-[400px] border border-slate-100">
-                    <div id="tabs-content">
-                        <!-- JS renders content here -->
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <!-- Checklist -->
+                    <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg text-amber-900"><i class="fa-solid fa-check-double mr-2"></i>필수 준비물</h3>
+                            <button onclick="resetChecklist()" class="text-xs text-slate-500 underline hover:text-red-500 transition-colors bg-white px-2 py-1 rounded border border-slate-200 shadow-sm">[초기화]</button>
+                        </div>
+                        <div id="checklist-container" class="space-y-2 h-[300px] overflow-y-auto pr-2">
+                            <!-- JS Generated -->
+                        </div>
+                    </div>
+                    <!-- Memo -->
+                    <div class="bg-yellow-50 p-6 rounded-2xl border border-yellow-100 shadow-sm flex flex-col">
+                        <h3 class="font-bold text-lg mb-4 text-yellow-800"><i class="fa-solid fa-pen-clip mr-2"></i>나만의 여행 메모장</h3>
+                        <textarea id="travel-memo" class="flex-1 w-full min-h-[300px] bg-white p-4 rounded-xl border border-yellow-200 text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner" placeholder="여권번호, 용돈 계획, 사야할 기념품 등을 자유롭게 적어두세요. 인터넷이 없어도 저장됩니다."></textarea>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Pre-Travel & Weather Guide -->
-        <section id="pretravel" class="py-20 bg-slate-50">
+        <!-- Emergency Contact & Safety Protocol -->
+        <section id="contact" class="py-16 bg-slate-50 border-t border-slate-200">
             <div class="container mx-auto px-4">
-                <div class="max-w-5xl mx-auto mb-12 text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-3">출발 가이드 & 날씨</h2>
-                    <p class="text-slate-600">5월의 대만 여행을 완벽하게 준비하는 방법</p>
+                <div class="text-center mb-10">
+                    <span class="text-red-600 font-black tracking-widest text-xs uppercase">EMERGENCY</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">비상 연락망</h2>
+                    <p class="text-sm text-slate-500 mt-2">위급 상황 시 아래 번호로 연락해 주시기 바랍니다.</p>
                 </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+                    <!-- Agency Contact -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center relative overflow-hidden hover:border-amber-500 transition-colors">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+                        <div class="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-headset text-amber-600 text-2xl"></i>
+                        </div>
+                        <span class="text-xs text-slate-400 font-bold mb-1">사북고 및 투어메이커 연락망</span>
+                        <h4 class="font-bold text-slate-800 text-xl mb-2">인솔 및 진행 관리</h4>
+                        <p class="text-sm text-slate-600">학교 측: 류길현 선생님</p>
+                        <p class="text-sm text-slate-600 mt-1">여행사: 이재명 대표 <a href="tel:010-9443-7881" class="text-amber-600 font-bold">010-9443-7881</a></p>
+                    </div>
 
-                <!-- Info Cards -->
-                <div class="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Meeting -->
-                    <div class="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
-                        <h3 class="text-lg font-bold mb-3 flex items-center text-blue-900">
-                            🚩 정선 출발 & 공항 집결
-                        </h3>
-                        <p class="text-sm text-slate-600 mb-2 font-bold">인천공항 제2터미널(T2)</p>
-                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
-                            <li><strong class="text-red-600">사북고 출발:</strong> 새벽 04:00 학교 집결 후 출발</li>
-                            <li><strong>공항 미팅:</strong> 07:30 (출발 3시간 전)</li>
-                            <li><strong>체크사항:</strong> 여권(유효기간 6개월 이상) 필참</li>
-                        </ul>
-                    </div>
-                    <!-- Weather -->
-                    <div class="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
-                        <h3 class="text-lg font-bold mb-3 flex items-center text-slate-800">
-                            🌦️ 5월 날씨 (우기 시작)
-                        </h3>
-                        <p class="text-sm text-slate-600 mb-2">덥고 습함 (평균 25℃ ~ 30℃)</p>
-                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                            <li><strong>필수템:</strong> <span class="text-red-600 font-bold">접이식 우산/우비</span> (비가 자주 옴)</li>
-                            <li><strong>옷차림:</strong> 반팔 위주 + 실내 에어컨 대비 얇 겉옷</li>
-                            <li>손선풍기, 땀 닦을 손수건 추천</li>
-                        </ul>
-                    </div>
-                    <!-- Voltage/Money -->
-                    <div class="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
-                        <h3 class="text-lg font-bold mb-3 flex items-center text-green-800">
-                            🔌 전압 & 환전
-                        </h3>
-                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
-                            <li><strong>전압:</strong> 110V (일명 돼지코 필수 지참)</li>
-                            <li><strong>환전:</strong> 대만 달러(TWD) 준비</li>
-                            <li>야시장 등에서 현금 사용이 많습니다.</li>
-                        </ul>
+                    <!-- Embassy -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center relative overflow-hidden hover:border-red-500 transition-colors">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                        <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-building-flag text-red-600 text-2xl"></i>
+                        </div>
+                        <span class="text-xs text-slate-400 font-bold mb-1">대만 현지 긴급 영사 보호</span>
+                        <h4 class="font-bold text-slate-800 text-xl mb-2">주타이베이 한국대표부</h4>
+                        <p class="text-sm text-slate-600">대표전화: +886-2-2758-8320</p>
+                        <p class="text-sm text-red-600 font-bold mt-1">대만 범죄(110) / 화재·구급(119)</p>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Safety & Etiquette Section (Operational Manual) -->
-        <section id="safety" class="py-20 bg-amber-50">
-            <div class="container mx-auto px-4">
-                <div class="text-center mb-12">
-                    <span class="text-red-600 font-bold tracking-wider uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Safety First</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-2">사북고 안전 & 에티켓 수칙</h2>
-                    <p class="text-slate-600 mt-2">즐거운 여행을 위해 반드시 지켜야 할 5가지 약속</p>
+                <!-- T-Safe24 Banner (Redesigned) -->
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center justify-center gap-2">
+                        🚨 긴급상황 발생 시 대처방안
+                    </h2>
+                    <p class="text-slate-500 mt-2 text-sm md:text-base">안전사고 및 긴급 상황에 대비한 행동 요령을 반드시 숙지해 주세요.</p>
                 </div>
 
-                <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-amber-100">
-                    <div class="grid md:grid-cols-2">
-                        <!-- Left: Safety Rules List -->
-                        <div class="p-8 md:p-10 flex flex-col justify-center border-r border-slate-100">
-                            <ul class="space-y-6">
-                                <li class="flex items-start">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mr-4">
-                                        <i class="fa-solid fa-bus"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg text-slate-800">전세버스 안전벨트 필수</h4>
-                                        <p class="text-slate-600 text-sm mt-1">이동 중에는 반드시 착용해야 하며, <span class="text-red-500 font-bold">미착용 시 현지 경찰 단속 및 벌금</span> 대상입니다.</p>
-                                    </div>
+                <div class="bg-[#fdf8f8] border border-[#f5e6e6] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-start md:items-center max-w-4xl mx-auto shadow-sm">
+                    <div class="bg-[#c23b3b] w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-md mx-auto md:mx-0">
+                        <i class="fa-solid fa-truck-medical text-white text-3xl"></i>
+                    </div>
+                    
+                    <div class="flex-1 w-full">
+                        <h3 class="text-xl font-bold text-[#8b2c2c] mb-1">투어메이커 안전 매뉴얼 (T-safe24)</h3>
+                        <p class="text-slate-700 text-sm mb-4 font-medium">사용자 실행형 긴급지원 시스템으로, 현장에서 즉각적으로 활용할 수 있는 안전 매뉴얼입니다.</p>
+                        
+                        <div class="bg-white border border-[#f0d8d8] rounded-xl p-4 mb-4 shadow-sm">
+                            <ul class="space-y-3 text-sm text-slate-700 font-medium">
+                                <li class="flex items-center gap-3">
+                                    <i class="fa-solid fa-location-dot text-[#c23b3b] w-4 text-center"></i> 위치 기반 긴급 지원 (인근 병원/경찰서 탐색)
                                 </li>
-                                <li class="flex items-start">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mr-4">
-                                        <i class="fa-solid fa-train-subway"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg text-slate-800">지하철(MRT) 취식 절대 금지</h4>
-                                        <!-- [Fix 6] 구체적 금액 삭제 및 '고액 벌금'으로 변경 -->
-                                        <p class="text-slate-600 text-sm mt-1">대만 지하철(노란 선 안쪽)에서는 껌, 사탕, <span class="text-red-500 font-bold">물 한 모금도 마시면 안 됩니다.</span> (적발 시 고액의 과태료 부과)</p>
-                                    </div>
+                                <li class="flex items-center gap-3">
+                                    <i class="fa-solid fa-comment-sms text-[#c23b3b] w-4 text-center"></i> 사용자 요청형 SOS 위치 전송
                                 </li>
-                                <li class="flex items-start">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mr-4">
-                                        <i class="fa-solid fa-people-group"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg text-slate-800">지우펀 인파 주의</h4>
-                                        <p class="text-slate-600 text-sm mt-1">지우펀은 사람이 매우 많아 한순간에 일행을 놓칩니다. <span class="font-bold underline">우측 영상 및 수칙 필독</span> 바랍니다.</p>
-                                    </div>
-                                </li>
-                                <li class="flex items-start">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl mr-4">
-                                        <i class="fa-solid fa-building-columns"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg text-slate-800">박물관 관람 매너</h4>
-                                        <p class="text-slate-600 text-sm mt-1">국립고궁박물관 내 정숙 유지. <span class="font-bold text-amber-600">A3 사이즈 이상의 백팩/가방</span>은 반입 불가하므로 보관소에 맡겨야 합니다.</p>
-                                    </div>
-                                </li>
-                                <li class="flex items-start">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-xl mr-4">
-                                        <i class="fa-solid fa-plug"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg text-slate-800">110V 전압 (돼지코)</h4>
-                                        <p class="text-slate-600 text-sm mt-1">한국 전자제품 플러그가 맞지 않습니다. <span class="font-bold">110V 어댑터(돼지코)</span>를 개인별로 꼭 챙겨주세요.</p>
-                                    </div>
+                                <li class="flex items-center gap-3">
+                                    <i class="fa-solid fa-share-nodes text-[#c23b3b] w-4 text-center"></i> 긴급 상황 대응용 위치 공유 시스템
                                 </li>
                             </ul>
                         </div>
                         
-                        <!-- Right: Warning Video & Operational Manual (Control Center Style) -->
-                        <div class="bg-slate-900 p-6 flex flex-col items-center justify-start text-center relative overflow-hidden">
-                            <!-- Pattern Background -->
-                            <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+')]"></div>
-                            
-                            <!-- Top Alert Banner -->
-                            <div class="z-10 w-full mb-4">
-                                <div class="bg-red-600 text-white font-bold text-sm py-2 px-4 rounded-lg shadow-lg animate-pulse border-2 border-red-400">
-                                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>
-                                    혼잡 구간에서는 ‘조별 이동 + 지정 집결지’가 원칙입니다.
-                                </div>
-                            </div>
-
-                            <!-- Video Container -->
-                            <!-- [Fix 5] YouTube 개인정보 보호 강화 -->
-                            <div class="z-10 w-full max-w-[280px] aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700 bg-black relative">
-                                <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/a1nGmel-QR4" title="지우펀 인파 경고" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            </div>
-                            
-                            <!-- Disclaimer (Liability Protection) -->
-                            <p class="z-10 text-slate-500 text-[10px] mt-2 mb-4 w-full px-4">
-                                * 본 영상은 혼잡도 ‘체감’ 공유용이며, 실제 동선·집결은 인솔자 안내를 따릅니다.
-                            </p>
-
-                            <!-- Bottom Action Manual -->
-                            <div class="z-10 w-full bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl p-4 text-left">
-                                <!-- 1. Emergency Protocol -->
-                                <div class="mb-4">
-                                    <h5 class="text-yellow-400 font-bold text-xs mb-2 uppercase tracking-wider flex items-center">
-                                        <i class="fa-solid fa-bullhorn mr-2"></i> 인솔자 호출 시 행동요령
-                                    </h5>
-                                    <div class="flex items-center justify-between text-[11px] font-bold text-white bg-slate-700/50 p-2 rounded border border-slate-600">
-                                        <div class="text-center"><span class="block text-red-400 mb-1"><i class="fa-solid fa-hand"></i></span>즉시 정지</div>
-                                        <i class="fa-solid fa-chevron-right text-slate-500"></i>
-                                        <div class="text-center"><span class="block text-blue-400 mb-1"><i class="fa-solid fa-shield-halved"></i></span>안전지대 대기</div>
-                                        <i class="fa-solid fa-chevron-right text-slate-500"></i>
-                                        <div class="text-center"><span class="block text-green-400 mb-1"><i class="fa-solid fa-flag"></i></span>집결지 이동</div>
-                                    </div>
-                                </div>
-
-                                <!-- 2. Crowd Rules (3-Line Rule) -->
-                                <div>
-                                    <h5 class="text-yellow-400 font-bold text-xs mb-2 uppercase tracking-wider flex items-center">
-                                        <i class="fa-solid fa-check-double mr-2"></i> 혼잡구간 3대 수칙
-                                    </h5>
-                                    <ul class="text-xs text-slate-300 space-y-2">
-                                        <li class="flex items-start">
-                                            <i class="fa-solid fa-user-group text-slate-500 mt-0.5 mr-2"></i>
-                                            <!-- [Fix 6] 3~4인 1조로 현실화 -->
-                                            <span><strong class="text-white">3~4인 1조 이동</strong> (최소 2인 이상 유지)</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fa-solid fa-clock text-slate-500 mt-0.5 mr-2"></i>
-                                            <span><strong class="text-white">집결지·시간 엄수</strong> (이탈 시 1차 복귀)</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fa-solid fa-camera text-slate-500 mt-0.5 mr-2"></i>
-                                            <span><strong class="text-white">이동 중 정지 금지</strong> (사진/쇼핑은 지정 장소)</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Personal Assistant Section -->
-        <section id="personal-assistant" class="py-20 bg-white">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4"><i class="fa-solid fa-user-astronaut text-green-600"></i> 나만의 여행 비서</h2>
-                
-                <div class="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
-                    
-                    <!-- 1. Smart Checklist -->
-                    <div id="checklist" class="bg-green-50 p-6 rounded-2xl shadow-lg border border-green-200">
-                        <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-green-800">
-                            <i class="fa-solid fa-list-check"></i> 짐 싸기 체크리스트
-                        </h3>
-                        <div id="checklist-container" class="space-y-3 h-[400px] overflow-y-auto pr-2 mt-4">
-                            <!-- JS generates items -->
-                        </div>
-                        <div class="mt-6 text-center">
-                            <button onclick="resetChecklist()" class="text-xs text-slate-400 underline hover:text-slate-600">체크리스트 초기화</button>
-                        </div>
-                    </div>
-
-                    <!-- 2. My Yellow Note -->
-                    <div id="mynote" class="flex flex-col">
-                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-2 text-amber-700">
-                            <i class="fa-solid fa-pen-to-square"></i> MY 노트
-                        </h3>
-                        <div class="relative flex-grow">
-                            <textarea id="travel-memo" 
-                                class="notepad w-full h-[480px] p-6 text-lg text-slate-800 resize-none rounded-lg"
-                                placeholder="여권번호, 용돈 내역, 부모님 선물 리스트 등을 적어두세요.&#10;인터넷이 안 터져도 내용은 저장되어 있습니다."></textarea>
-                            <div id="save-status" class="absolute bottom-4 right-4 text-xs text-slate-500 bg-white/50 px-2 py-1 rounded">
-                                자동 저장 대기중...
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Emergency Contact -->
-        <section id="emergency" class="py-20 bg-slate-100">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-2xl font-bold mb-8">비상 연락망</h2>
-                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-sm border-2 border-amber-400 flex flex-col items-center justify-center">
-                        <h4 class="font-bold text-slate-900 mb-4">인솔 및 비상연락</h4>
+                        <p class="text-[11px] md:text-xs text-slate-500 mb-5">※ 본 시스템은 상시 자동 추적(관제)이 아닌, 필요 시 사용자의 실행으로 구동되는 안심 보조 도구입니다.</p>
                         
-                        <!-- School Contact -->
-                        <div class="text-center mb-4 w-full">
-                            <span class="inline-block px-2 py-1 bg-slate-100 rounded text-xs text-slate-500 font-bold mb-1">학교 측 담당 (사북고)</span>
-                            <p class="font-bold text-slate-800 text-lg">류길현 선생님</p>
-                        </div>
-                    
-                        <!-- Agency Contact -->
-                        <div class="text-center pt-4 border-t border-slate-100 w-full">
-                            <span class="inline-block px-2 py-1 bg-amber-100 rounded text-xs text-amber-700 font-bold mb-1">여행사 측 담당 (투어메이커)</span>
-                            <p class="font-bold text-slate-800 text-lg">이재명</p>
-                            <a href="tel:01094437881" class="text-blue-600 font-bold block mt-1 text-xl hover:text-blue-800 transition-colors"><i class="fa-solid fa-phone mr-2"></i>010-9443-7881</a>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm">
-                        <h4 class="font-bold text-blue-600 mb-2">현지 긴급</h4>
-                        <p class="text-slate-700">주 타이베이 한국 대표부</p>
-                        <a href="tel:+886227588320" class="text-sm text-blue-600">+886-2-2758-8320</a>
-                        <p class="text-slate-500 text-xs mt-2">경찰 110 / 구급 119</p>
+                        <a href="https://indadady.github.io/T-safe24" target="_blank" class="inline-flex items-center justify-center gap-2 bg-[#c23b3b] hover:bg-[#a62d2d] text-white text-sm font-bold py-3 px-6 rounded-lg transition-colors shadow-sm">
+                            매뉴얼 확인하기 <i class="fa-solid fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
+
             </div>
         </section>
 
-    </main>
+        <!-- Footer -->
+        <footer class="bg-[#f8f9fa] py-12 border-t border-slate-100 text-center">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-center gap-4 mb-8">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker" class="h-10">
+                </div>
+                
+                <p class="text-[12px] md:text-[13px] text-[#6c757d] font-normal mb-8 max-w-2xl mx-auto leading-relaxed text-center">
+                    [System Powered by TOURMAKER] 본 스마트 가이드북은 <strong>사북고등학교</strong>의 기획과 <a href="http://tourmaker.kr" target="_blank" class="font-bold text-[#6c757d] hover:text-blue-600 underline underline-offset-2">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.
+                </p>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div class="container mx-auto px-4 text-center">
-            <div class="mb-6 flex justify-center">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker Footer Logo" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-opacity">
+                <div class="mb-12">
+                    <a href="http://tourmaker.kr" target="_blank" class="inline-block border border-slate-300 rounded-2xl px-8 py-4 bg-white text-slate-700 font-bold hover:bg-slate-50 transition-all shadow-sm">
+                        👉 <span class="mr-2">투어메이커</span> 공식 홈페이지 바로가기
+                    </a>
+                </div>
+                
+                <p class="text-[10px] text-slate-400">&copy; 2026 Tourmaker Inc. All rights reserved.</p>
             </div>
-            <p class="mb-2 font-medium text-slate-300">사북고등학교의 안전하고 즐거운 수학여행을 응원합니다.</p>
-            <p class="text-sm text-slate-600">&copy; 2026 Tourmaker. All Rights Reserved.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
+    <!-- END Screen Content Wrapper -->
 
-    <!-- JavaScript Logic -->
+    <!-- ========================================== -->
+    <!-- Print-Only Area (A4 Optimized) -->
+    <!-- ========================================== -->
+    <div id="print-area" class="hidden print:block w-full bg-white text-black py-4">
+        <!-- Print Header -->
+        <h1 class="text-2xl font-black text-center mb-6 pb-4 border-b-2 border-slate-800" style="font-family: 'Nanum Myeongjo', serif;">
+            사북고등학교 대만 역사문화탐방 일정표
+        </h1>
+        
+        <div class="flex justify-between items-end mb-4 font-bold text-sm">
+            <div class="text-slate-800">
+                <p>일 정 : 2026.05.26(화) ~ 05.29(금) [3박 4일]</p>
+                <p class="mt-1">인 솔 : 류길현 선생님</p>
+            </div>
+            <div class="text-right text-slate-800">
+                <p>투어메이커 비상연락망</p>
+                <p class="mt-1">이재명 대표 (010-9443-7881)</p>
+            </div>
+        </div>
+
+        <!-- Print Table -->
+        <table class="w-full border-collapse border-2 border-slate-800 text-sm">
+            <thead>
+                <tr class="bg-slate-100 text-slate-800">
+                    <th class="border border-slate-800 py-2 px-3 w-20 text-center font-bold">일차</th>
+                    <th class="border border-slate-800 py-2 px-3 text-center font-bold">상세 일정</th>
+                    <th class="border border-slate-800 py-2 px-3 w-28 text-center font-bold">비고/식사</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Day 1 -->
+                <tr>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">1일차<br><span class="text-xs font-normal">(5.26)</span></td>
+                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                        04:00 사북 집결 및 출발<br>
+                        <strong class="text-blue-700">인천공항 T2 출발 (대한항공 KE2021 10:30) ✈️ 타오위안 도착 (12:10)</strong><br>
+                        ▶ <strong>국립고궁박물관</strong> : 세계 4대 박물관 관람<br>
+                        ▶ <strong>충렬사</strong> : 근위병 교대식 참관<br>
+                        ▶ <strong>101 타워 전망대</strong> : 타이베이 전경 조망<br>
+                        ▶ 호텔 투숙 및 휴식 (알로프트 베이터우)
+                    </td>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
+                        [조] 불포함<br>
+                        [중] 현지식(우육면)<br>
+                        [석] 현지식(샤브샤브)
+                    </td>
+                </tr>
+                <!-- Day 2 -->
+                <tr>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">2일차<br><span class="text-xs font-normal">(5.27)</span></td>
+                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                        ▶ 호텔 조식 후 일정 시작<br>
+                        ▶ <strong>곽원익 펑리수 만들기 체험</strong> : 박물관 견학 및 DIY 클래스<br>
+                        ▶ 단수이 이동<br>
+                        ▶ <strong>홍마오청 / 진리대학</strong> : 서구식 건축물 및 낭만의 거리 산책<br>
+                        ▶ <strong>단수이 라오제 & 유람선</strong> : 옛거리 먹거리 체험 및 전통 유람선 탑승<br>
+                        ▶ 석식 후 호텔 휴식
+                    </td>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
+                        [조] 호텔식<br>
+                        [중] 현지식<br>
+                        [석] 현지식(몽골리안 BBQ)
+                    </td>
+                </tr>
+                <!-- Day 3 -->
+                <tr>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">3일차<br><span class="text-xs font-normal">(5.28)</span></td>
+                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                        ▶ 호텔 조식 후 예스지로 이동<br>
+                        ▶ <strong>예류 국립해양 지질공원</strong> : 희귀 기암괴석 탐방<br>
+                        ▶ <strong>스펀 천등 날리기</strong> : 4인 1조 기찻길 소원 등 띄우기<br>
+                        ▶ <strong>지우펀</strong> : 센과 치히로의 모티브가 된 옛마을 골목길<br>
+                        ▶ <strong>스린 야시장</strong> : 타이베이 최대 야시장 조별 문화/먹거리 체험<br>
+                        ▶ 호텔 귀환 및 휴식
+                    </td>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
+                        [조] 호텔식<br>
+                        [중] 현지식<br>
+                        [석] 현지식(무제한 삼겹살)
+                    </td>
+                </tr>
+                <!-- Day 4 -->
+                <tr>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">4일차<br><span class="text-xs font-normal">(5.29)</span></td>
+                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                        ▶ 호텔 조식 후 체크아웃<br>
+                        ▶ <strong>스린 관저</strong> : 장제스 총통 정원 산책<br>
+                        ▶ 타오위안 공항으로 이동 및 수속<br>
+                        <strong class="text-red-700">타오위안 출발 (대한항공 KE2022 13:20) ✈️ 인천공항 T2 도착 (16:50)</strong><br>
+                        ▶ 전용버스로 학교 복귀 후 해산
+                    </td>
+                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
+                        [조] 호텔식<br>
+                        [중] 불포함 (또는 기내식)<br>
+                        [석] 불포함
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="mt-4 text-xs text-right text-slate-600">
+            ※ 상기 일정은 항공기 연발착 및 현지 사정, 기상 상황 등에 따라 다소 변경될 수 있습니다.
+        </div>
+        
+        <div class="mt-12 flex justify-end">
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8" alt="Tourmaker" class="h-8 md:h-10 object-contain opacity-90">
+        </div>
+    </div>
+    <!-- END Print-Only Area -->
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Video Play Logic (Updated for nocookie)
-        function playVideo(element, videoId) {
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
-            iframe.title = "YouTube Video";
-            iframe.className = "w-full h-full";
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            // [Fix 5] Referrer Policy 추가
-            iframe.referrerPolicy = "strict-origin-when-cross-origin";
-            
-            element.innerHTML = '';
-            element.appendChild(iframe);
-            element.classList.remove('cursor-pointer', 'group'); 
+        // Schedule Tab Logic
+        function openScheduleTab(evt, tabId){
+            document.querySelectorAll('.tab-content-schedule').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn-schedule').forEach(btn => {
+                btn.classList.remove('active','bg-amber-600','text-white','border-amber-600','shadow-md');
+                btn.classList.add('bg-white','text-slate-500','border-slate-200');
+            });
+            document.getElementById('sched-' + tabId)?.classList.remove('hidden');
+            if(evt) {
+                evt.currentTarget.classList.add('active','bg-amber-600','text-white','border-amber-600','shadow-md');
+                evt.currentTarget.classList.remove('bg-white','text-slate-500','border-slate-200');
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            // [Fix 4] D-Day Counter (Precision Logic + Trip End Logic)
-            const dDayBadge = document.getElementById('d-day-badge');
-            
-            const startDate = new Date('2026-05-26T00:00:00');
-            const endDate = new Date('2026-05-29T00:00:00'); // 3박 4일 종료일
-            
-            startDate.setHours(0,0,0,0);
-            endDate.setHours(0,0,0,0);
-            
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            
-            const diffTime = startDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays > 0) {
-                // 여행 전
-                dDayBadge.innerText = `D-${diffDays}`;
-                dDayBadge.classList.add('bg-green-600');
-            } else if (diffDays <= 0 && today <= endDate) {
-                // 여행 중 (출발일 ~ 종료일)
-                const tripDay = Math.abs(diffDays) + 1;
-                dDayBadge.innerText = `여행 ${tripDay}일차`;
-                dDayBadge.classList.add('bg-blue-600');
+        function shareLink(){
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({ 
+                    title: '[사북고] 대만 역사문화탐방 가이드', 
+                    text: '사북고등학교 대만 일정 및 준비물 안내입니다.',
+                    url: url 
+                }).catch(()=>{});
             } else {
-                // 여행 종료 후
-                dDayBadge.innerText = "모든 여정이 종료되었습니다. 좋은 추억으로 오래 간직되길 바랍니다.";
-                dDayBadge.classList.add('bg-slate-600');
-                // 긴 문구를 위해 스타일 조정 (모바일 등 고려)
-                dDayBadge.classList.remove('rounded-full');
-                dDayBadge.classList.add('rounded-lg');
+                navigator.clipboard?.writeText(url).then(()=>alert('가이드북 링크가 복사되었습니다. 공유해주세요.'));
             }
+        }
 
-            // My Yellow Note (Auto-save)
-            const memoArea = document.getElementById('travel-memo');
-            const saveStatus = document.getElementById('save-status');
-            
-            const savedMemo = localStorage.getItem('sabuk_memo_2026');
-            if (savedMemo) {
-                memoArea.value = savedMemo;
-            }
+        // Checklist Logic
+        const CHECK_KEY = 'sabuk_taiwan_checklist_v1'; 
+        const CHECK_ITEMS = [
+            '여권 (유효기간 6개월 이상)',
+            '돼지코 (110V 전원 변환 어댑터 11자형 필수)',
+            '휴대용 우산 / 우비 (5월 잦은 비 대비)',
+            '개인 상비약 (멀미약, 소화제, 밴드)',
+            '여벌 옷 (습한 날씨 대비 넉넉하게)',
+            '얇은 겉옷 (냉방이 강한 실내 및 버스용)',
+            '엔화 환전 대신 대만달러(TWD) 준비',
+            '걷기 편한 운동화',
+            '보조배터리 (반드시 수하물 아닌 기내 반입)',
+        ];
 
-            memoArea.addEventListener('input', function() {
-                localStorage.setItem('sabuk_memo_2026', this.value);
-                saveStatus.innerText = "저장됨 " + new Date().toLocaleTimeString();
-                saveStatus.classList.add('text-green-600');
-                setTimeout(() => saveStatus.classList.remove('text-green-600'), 1000);
-            });
+        function renderChecklist(){
+            const container = document.getElementById('checklist-container');
+            if(!container) return;
 
-            // Navigation Active Scroll Spy
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active', 'text-amber-600', 'border-amber-600');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active', 'text-amber-600', 'border-amber-600');
-                            }
-                        });
-                    }
-                });
-            }, { threshold: 0.15 });
-            sections.forEach(section => observer.observe(section));
-            
-            // Schedule Data
-            const scheduleData = {
-                day1: {
-                    title: 'DAY 1: 5월 26일 (화) - 설렘의 시작',
-                    items: [
-                        { time: '04:00', desc: '<span class="text-red-600 font-bold">강원도 정선 사북 출발</span> (공항 3시간 전 도착 목표)', icon: '🚌' },
-                        { time: '07:30', desc: '인천공항 제2터미널(T2) 집결 및 수속 (단체 인원 고려)', icon: '🚩' },
-                        { time: '10:30', desc: '인천 출발 (KE2021) / 12:10 타이페이 도착', icon: '✈️' },
-                        { time: '중식', desc: '현지식 (우육면)', icon: '🍜' },
-                        { time: '명소', desc: '세계 4대 박물관 <strong class="text-green-800">국립고궁박물관</strong>', icon: '🏛️' },
-                        { time: '명소', desc: '근위병 교대식 관람 <strong>충렬사</strong>', icon: '💂' },
-                        { time: '명소', desc: '타이페이 랜드마크 <strong class="text-blue-800">101 타워 전망대</strong>', icon: '🏙️' },
-                        { time: '석식', desc: '현지식 (샤브샤브)', icon: '🍲' },
-                        { time: '숙박', desc: '호텔: 플래티넘 / 푸신 / 알로프트 / 참참 동급', icon: '🏨' }
-                    ]
-                },
-                day2: {
-                    title: 'DAY 2: 5월 27일 (수) - 체험과 낭만 (단수이)',
-                    items: [
-                        { time: '오전', desc: '호텔 조식 후 이동', icon: '🍽️' },
-                        { time: '체험', desc: '<strong class="text-amber-600 text-xl">★ 타이베이 곽원익(郭元益) 과자(가오빙) 박물관 2시간 코스 (박물관 투어 + 펑리수 DIY + 다과/포장)</strong>', icon: '🍍' },
-                        { time: '이동', desc: '낭만의 항구도시 <strong class="text-blue-600">단수이(Tamsui)</strong>로 이동 (40분)', icon: '🚌' },
-                        { time: '명소', desc: '유럽풍 붉은 벽돌 요새 <strong>홍마오청</strong>', icon: '🏰' },
-                        { time: '체험', desc: '단수이 거리 (대왕카스테라, 버블티) & 단수이강변공원', icon: '🥤' },
-                        { time: '체험', desc: '단수이-빠리 연결 <strong>전통 유람선</strong> 탑승', icon: '⛴️' },
-                        { time: '석식', desc: '몽골리안 BBQ', icon: '🍖' },
-                        { time: '숙박', desc: '호텔 투숙 및 휴식', icon: '🏨' }
-                    ]
-                },
-                day3: {
-                    title: 'DAY 3: 5월 28일 (목) - 자연과 소원',
-                    items: [
-                        { time: '오전', desc: '센과 치히로의 배경 <strong>지우펀</strong> (자유시간)', icon: '🏮' },
-                        { time: '명소', desc: '기암괴석의 향연 <strong class="text-teal-700">예류 국립해양 지질공원</strong>', icon: '🗿' },
-                        { time: '체험', desc: '기차마을 <strong>스펀 - 천등 날리기</strong> (4인 1개)', icon: '🙏' },
-                        { time: '석식', desc: '현지식 (삼겹살 무제한)', icon: '🥓' },
-                        { time: '야간', desc: '타이페이 최대 <strong class="text-amber-600">스린 야시장</strong> (자유시간)', icon: '🌙' },
-                        { time: '숙박', desc: '호텔 투숙 및 휴식', icon: '🏨' }
-                    ]
-                },
-                day4: {
-                    title: 'DAY 4: 5월 29일 (금) - 아쉬움을 뒤로하고',
-                    items: [
-                        { time: '오전', desc: '장개석 총통의 정원 <strong>스린 관저</strong> 산책', icon: '🌳' },
-                        { time: '이동', desc: '공항 이동 및 출국 수속', icon: '🚌' },
-                        { time: '13:20', desc: '타이페이 출발 (KE2022) / 16:50 인천 도착', icon: '✈️' },
-                        { time: '도착', desc: '전용 버스로 정선 사북 이동 및 해산', icon: '🏠' }
-                    ]
-                }
-            };
+            const saved = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
 
-            // Render Schedule Tabs
-            const tabsContainer = document.getElementById('tabs-content');
-            const tabButtons = document.querySelectorAll('.tab-btn');
-
-            function renderTabContent(day) {
-                const data = scheduleData[day];
-                // [Fix 2] animate-fade-in 클래스 사용 (CSS에 정의됨)
-                let content = `<div class="animate-fade-in"><h3 class="text-2xl font-bold mb-8 text-slate-800 border-b pb-4">${data.title}</h3><ul class="space-y-6">`;
-                data.items.forEach(item => {
-                    content += `
-                        <li class="flex items-start group timeline-item relative pb-8 pl-8">
-                            <span class="absolute left-0 w-6 h-6 bg-white border-4 border-amber-500 rounded-full z-10"></span>
-                            <span class="text-3xl mr-5 group-hover:scale-110 transition-transform">${item.icon}</span>
-                            <div>
-                                <span class="inline-block bg-slate-100 text-slate-600 text-xs font-bold px-2 py-1 rounded mb-1">${item.time}</span>
-                                <p class="text-slate-700 text-lg leading-relaxed">${item.desc}</p>
-                            </div>
-                        </li>`;
-                });
-                content += '</ul></div>';
-                tabsContainer.innerHTML = content;
-            }
-
-            // [Fix 3] JS에서는 active 클래스 토글만 담당 (색상 제어 로직 제거)
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active'); 
-                    renderTabContent(button.dataset.tab);
-                });
-            });
-
-            // Initial Render
-            renderTabContent('day1');
-
-            // Checklist Logic
-            const checklistContainer = document.getElementById('checklist-container');
-            const checklistItems = [
-                { id: 'passport', text: '여권 (유효기간 6개월 이상)' },
-                { id: 'raincoat', text: '우산/우비 (5월 우기 대비 필수)' },
-                { id: 'adapter', text: '110V 어댑터 (돼지코)' },
-                { id: 'clothes', text: '여벌 옷 (습함 대비 넉넉히)' },
-                { id: 'cardigan', text: '얇은 겉옷 (실내 에어컨/버스)' },
-                { id: 'money', text: '용돈 (대만 달러 환전)' },
-                { id: 'meds', text: '개인 상비약 (멀미약, 소화제)' },
-                { id: 'battery', text: '보조배터리 (기내 반입)' },
-                { id: 'tissues', text: '물티슈/손수건 (땀/습기)' },
-                { id: 'shoes', text: '편한 운동화 (많이 걸음)' },
-                { id: 'data', text: '유심/로밍 신청 확인' }
-            ];
-
-            checklistItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center p-3 bg-white rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors shadow-sm';
-                div.innerHTML = `
-                    <input type="checkbox" id="${item.id}" class="h-5 w-5 text-amber-600 rounded border-gray-300 focus:ring-amber-500 cursor-pointer">
-                    <label for="${item.id}" class="ml-3 text-slate-700 font-medium cursor-pointer flex-grow select-none">${item.text}</label>
+            container.innerHTML = CHECK_ITEMS.map((label, idx) => {
+                const id = `chk_tw_${idx}`;
+                const checked = saved[id] ? 'checked' : '';
+                return `
+                    <label class="flex items-center gap-3 bg-white border border-amber-50 rounded-xl px-4 py-3 cursor-pointer hover:bg-amber-50 transition shadow-sm">
+                        <input type="checkbox" id="${id}" ${checked} class="h-5 w-5 text-amber-600 rounded focus:ring-amber-500 border-slate-300">
+                        <span class="text-sm font-medium text-slate-700">${label}</span>
+                    </label>
                 `;
-                checklistContainer.appendChild(div);
-                
-                const checkbox = div.querySelector('input');
-                checkbox.checked = localStorage.getItem('sabuk_check_2026_' + item.id) === 'true';
-                checkbox.addEventListener('change', (e) => localStorage.setItem('sabuk_check_2026_' + item.id, e.target.checked));
+            }).join('');
+
+            container.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const currentSaved = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
+                    currentSaved[cb.id] = cb.checked;
+                    localStorage.setItem(CHECK_KEY, JSON.stringify(currentSaved));
+                });
+            });
+        }
+        
+        function resetChecklist(){
+            if(confirm('체크리스트를 초기화하시겠습니까?')){
+                localStorage.removeItem(CHECK_KEY);
+                renderChecklist();
+            }
+        }
+        renderChecklist();
+
+        // Memo Logic
+        (function(){
+            const memo = document.getElementById('travel-memo');
+            if(!memo) return;
+            const KEY = 'sabuk_taiwan_memo_v1'; 
+            memo.value = localStorage.getItem(KEY) || '';
+            memo.addEventListener('input', () => {
+                localStorage.setItem(KEY, memo.value);
+            });
+        })();
+
+        // Map Route & Layer Logic (Taiwan Coordinates)
+        let map;
+        let mapLayers = [];
+
+        const spots = {
+            tpe: { coords: [25.0797, 121.2342], title: "타오위안 공항", color: "#64748b", icon: "✈️", isSub: false },
+            taipei_101: { coords: [25.0330, 121.5654], title: "타이베이 101", color: "#2563eb", icon: "🏙️", isSub: false },
+            museum: { coords: [25.1024, 121.5485], title: "국립고궁박물관", color: "#2563eb", icon: "🏛️", isSub: true },
+            tamsui: { coords: [25.1753, 121.4332], title: "단수이 (2일차)", color: "#0d9488", icon: "2️⃣", isSub: false },
+            yehliu: { coords: [25.2064, 121.6903], title: "예류 지질공원", color: "#d97706", icon: "🗿", isSub: true },
+            shifen: { coords: [25.0409, 121.7766], title: "스펀 (천등)", color: "#d97706", icon: "🙏", isSub: true },
+            jiufen: { coords: [25.1099, 121.8451], title: "지우펀 (3일차)", color: "#d97706", icon: "3️⃣", isSub: false }
+        };
+
+        const routes = {
+            all: {
+                points: ['tpe', 'taipei_101', 'museum', 'tamsui', 'yehliu', 'shifen', 'jiufen'],
+                lines: [
+                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords], color: '#2563eb', dash: '' },
+                    { latlngs: [spots.taipei_101.coords, spots.tamsui.coords, spots.taipei_101.coords], color: '#0d9488', dash: '' },
+                    { latlngs: [spots.taipei_101.coords, spots.yehliu.coords, spots.jiufen.coords, spots.shifen.coords, spots.taipei_101.coords], color: '#d97706', dash: '' }
+                ]
+            },
+            day1: {
+                points: ['tpe', 'museum', 'taipei_101'],
+                lines: [
+                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords], color: '#2563eb', dash: '' }
+                ]
+            },
+            day2: {
+                points: ['taipei_101', 'tamsui'],
+                lines: [
+                    { latlngs: [spots.taipei_101.coords, spots.tamsui.coords, spots.taipei_101.coords], color: '#0d9488', dash: '' }
+                ]
+            },
+            day3: {
+                points: ['taipei_101', 'yehliu', 'jiufen', 'shifen'],
+                lines: [
+                    { latlngs: [spots.taipei_101.coords, spots.yehliu.coords, spots.jiufen.coords, spots.shifen.coords, spots.taipei_101.coords], color: '#d97706', dash: '' }
+                ]
+            },
+            day4: {
+                points: ['taipei_101', 'tpe'],
+                lines: [{ latlngs: [spots.taipei_101.coords, spots.tpe.coords], color: '#16a34a', dash: '5,5' }]
+            }
+        };
+
+        function drawMap(routeKey) {
+            if (!map) return;
+            
+            // 기존 레이어 지우기
+            mapLayers.forEach(layer => map.removeLayer(layer));
+            mapLayers = [];
+
+            const routeData = routes[routeKey];
+            
+            // 선 그리기
+            routeData.lines.forEach(lineDef => {
+                const polyline = L.polyline(lineDef.latlngs, {
+                    color: lineDef.color,
+                    weight: 3,
+                    opacity: 0.8,
+                    dashArray: lineDef.dash
+                }).addTo(map);
+                mapLayers.push(polyline);
             });
 
-            window.resetChecklist = function() {
-                if(confirm('체크리스트를 초기화 하시겠습니까?')) {
-                    checklistItems.forEach(item => {
-                        localStorage.removeItem('sabuk_check_2026_' + item.id);
-                        document.getElementById(item.id).checked = false;
-                    });
-                }
+            // 마커 그리기
+            let currentBounds = L.latLngBounds();
+            routeData.points.forEach(key => {
+                const spot = spots[key];
+                const size = spot.isSub ? 22 : 28;
+                const fontSize = spot.isSub ? 10 : 12;
+                
+                const icon = L.divIcon({
+                    className: 'custom-icon',
+                    html: `<div style="background-color:${spot.color}; width:${size}px; height:${size}px; border-radius:50%; border:2px solid white; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:${fontSize}px;">${spot.icon}</div>`,
+                    iconSize: [size, size]
+                });
+                const marker = L.marker(spot.coords, {icon: icon}).addTo(map).bindPopup(`<b>${spot.title}</b>`);
+                mapLayers.push(marker);
+                currentBounds.extend(spot.coords);
+            });
+
+            // 화면 맞추기
+            map.fitBounds(currentBounds, { padding: [50, 50], maxZoom: 12 });
+        }
+
+        function changeMapRoute(dayKey) {
+            document.querySelectorAll('.map-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-800', 'text-white', 'shadow-md');
+                btn.classList.add('bg-white', 'text-slate-600');
+            });
+            const clickedBtn = document.querySelector(`.map-btn[onclick="changeMapRoute('${dayKey}')"]`);
+            if(clickedBtn){
+                clickedBtn.classList.add('active', 'bg-slate-800', 'text-white', 'shadow-md');
+                clickedBtn.classList.remove('bg-white', 'text-slate-600');
             }
-        });
+            drawMap(dayKey);
+        }
+
+        let mapInited = false;
+        function initMap(){
+            if(mapInited || !window.L) return;
+            mapInited = true;
+            
+            map = L.map('map', { scrollWheelZoom:false });
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                maxZoom: 19
+            }).addTo(map);
+
+            drawMap('all');
+        }
+
+        // D-Day Logic
+        const depart = new Date('2026-05-26');
+        const diff = Math.ceil((depart - new Date()) / (1000*60*60*24));
+        const badge = document.getElementById('d-day-badge');
+        badge.textContent = diff > 0 ? `D-${diff}` : (diff === 0 ? 'D-DAY' : `D+${Math.abs(diff)}`);
+        badge.classList.remove('hidden');
+
+        // Lazy load map
+        const io = new IntersectionObserver((entries)=>{
+            if(entries[0].isIntersecting) { initMap(); io.disconnect(); }
+        }, { threshold: 0.1 });
+        io.observe(document.getElementById('map-section'));
     </script>
 </body>
 </html>
