@@ -269,7 +269,7 @@
             </div>
         </section>
 
-        <!-- Map -->
+        <!-- Map Section -->
         <section id="map-section" class="py-12 bg-white">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-8">
@@ -664,7 +664,7 @@
                         </div>
                         <span class="text-xs text-slate-400 font-bold mb-1">사북고 및 투어메이커 연락망</span>
                         <h4 class="font-bold text-slate-800 text-xl mb-2">인솔 및 진행 관리</h4>
-                        <p class="text-sm text-slate-600">학교 측: 류길현 선생님</p>
+                        <p class="text-sm text-slate-600">학교 측: 엄태호 선생님</p>
                         <p class="text-sm text-slate-600 mt-1">여행사: 이재명 대표 <a href="tel:010-9443-7881" class="text-amber-600 font-bold">010-9443-7881</a></p>
                     </div>
 
@@ -758,7 +758,7 @@
         <div class="flex justify-between items-end mb-4 font-bold text-sm">
             <div class="text-slate-800">
                 <p>일 정 : 2026.05.26(화) ~ 05.29(금) [3박 4일]</p>
-                <p class="mt-1">인 솔 : 류길현 선생님</p>
+                <p class="mt-1">인 솔 : 엄태호 선생님</p>
             </div>
             <div class="text-right text-slate-800">
                 <p>투어메이커 비상연락망</p>
@@ -953,6 +953,8 @@
             tpe: { coords: [25.0797, 121.2342], title: "타오위안 공항", color: "#64748b", icon: "✈️", isSub: false },
             taipei_101: { coords: [25.0330, 121.5654], title: "타이베이 101", color: "#2563eb", icon: "🏙️", isSub: false },
             museum: { coords: [25.1024, 121.5485], title: "국립고궁박물관", color: "#2563eb", icon: "🏛️", isSub: true },
+            aloft_beitou: { coords: [25.1278, 121.4984], title: "알로프트 베이터우 (숙소)", color: "#1e293b", icon: "🏨", isSub: true },
+            kuo_yuan_ye: { coords: [25.0933, 121.5233], title: "곽원익 펑리수 체험", color: "#f59e0b", icon: "🍍", isSub: true },
             tamsui: { coords: [25.1753, 121.4332], title: "단수이 (2일차)", color: "#0d9488", icon: "2️⃣", isSub: false },
             yehliu: { coords: [25.2064, 121.6903], title: "예류 지질공원", color: "#d97706", icon: "🗿", isSub: true },
             shifen: { coords: [25.0409, 121.7766], title: "스펀 (천등)", color: "#d97706", icon: "🙏", isSub: true },
@@ -961,34 +963,34 @@
 
         const routes = {
             all: {
-                points: ['tpe', 'taipei_101', 'museum', 'tamsui', 'yehliu', 'shifen', 'jiufen'],
+                points: ['tpe', 'museum', 'taipei_101', 'aloft_beitou', 'kuo_yuan_ye', 'tamsui', 'yehliu', 'shifen', 'jiufen'],
                 lines: [
-                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords], color: '#2563eb', dash: '' },
-                    { latlngs: [spots.taipei_101.coords, spots.tamsui.coords, spots.taipei_101.coords], color: '#0d9488', dash: '' },
-                    { latlngs: [spots.taipei_101.coords, spots.yehliu.coords, spots.jiufen.coords, spots.shifen.coords, spots.taipei_101.coords], color: '#d97706', dash: '' }
+                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' },
+                    { latlngs: [spots.aloft_beitou.coords, spots.kuo_yuan_ye.coords, spots.tamsui.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' },
+                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
                 ]
             },
             day1: {
-                points: ['tpe', 'museum', 'taipei_101'],
+                points: ['tpe', 'museum', 'taipei_101', 'aloft_beitou'],
                 lines: [
-                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords], color: '#2563eb', dash: '' }
+                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' }
                 ]
             },
             day2: {
-                points: ['taipei_101', 'tamsui'],
+                points: ['aloft_beitou', 'kuo_yuan_ye', 'tamsui'],
                 lines: [
-                    { latlngs: [spots.taipei_101.coords, spots.tamsui.coords, spots.taipei_101.coords], color: '#0d9488', dash: '' }
+                    { latlngs: [spots.aloft_beitou.coords, spots.kuo_yuan_ye.coords, spots.tamsui.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' }
                 ]
             },
             day3: {
-                points: ['taipei_101', 'yehliu', 'jiufen', 'shifen'],
+                points: ['aloft_beitou', 'yehliu', 'shifen', 'jiufen'],
                 lines: [
-                    { latlngs: [spots.taipei_101.coords, spots.yehliu.coords, spots.jiufen.coords, spots.shifen.coords, spots.taipei_101.coords], color: '#d97706', dash: '' }
+                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
                 ]
             },
             day4: {
-                points: ['taipei_101', 'tpe'],
-                lines: [{ latlngs: [spots.taipei_101.coords, spots.tpe.coords], color: '#16a34a', dash: '5,5' }]
+                points: ['aloft_beitou', 'tpe'],
+                lines: [{ latlngs: [spots.aloft_beitou.coords, spots.tpe.coords], color: '#16a34a', dash: '5,5' }]
             }
         };
 
@@ -1001,14 +1003,29 @@
 
             const routeData = routes[routeKey];
             
-            // 선 그리기
-            routeData.lines.forEach(lineDef => {
+            // 선 그리기 (애니메이션 효과 적용)
+            routeData.lines.forEach((lineDef) => {
                 const polyline = L.polyline(lineDef.latlngs, {
                     color: lineDef.color,
-                    weight: 3,
+                    weight: 4, // 굵기 상향 조정 (3 -> 4)
                     opacity: 0.8,
                     dashArray: lineDef.dash
                 }).addTo(map);
+
+                // 점선이 아닌 실선일 경우에만 애니메이션 적용 (기타큐슈 환경과 샘플 로직 동일)
+                setTimeout(() => {
+                    const path = polyline.getElement();
+                    if (path && lineDef.dash === '') { 
+                        const length = path.getTotalLength();
+                        path.style.transition = 'none';
+                        path.style.strokeDasharray = length + ' ' + length;
+                        path.style.strokeDashoffset = length;
+                        path.getBoundingClientRect(); // 강제 리플로우를 통해 애니메이션 큐 초기화
+                        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                        path.style.strokeDashoffset = '0';
+                    }
+                }, 50);
+
                 mapLayers.push(polyline);
             });
 
