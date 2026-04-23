@@ -42,13 +42,18 @@
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         section { scroll-margin-top: 80px; }
         
-        /* Map Customization */
+        /* Map Customization - PopIn Animation Rule Applied */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+            70% { transform: scale(1.2) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
         .custom-icon div {
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            opacity: 0; /* JS에서 애니메이션 적용 전 숨김 */
         }
         .custom-icon div:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) !important;
             z-index: 100;
         }
         
@@ -65,14 +70,24 @@
             background-color: var(--tw-bg-color);
         }
 
-        /* Print Settings for A4 format */
+        /* Print Settings for A4 format (Tourmaker Standard) */
         @media print {
             @page { size: A4; margin: 15mm; }
             body { background-color: white !important; }
             a[href]:after { content: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            /* Table Print Rules */
+            table { table-layout: fixed; width: 100%; word-break: keep-all; }
+            th:nth-child(1), td:nth-child(1) { width: 11%; }
+            th:nth-child(2), td:nth-child(2) { width: 75%; padding-left: 8px !important; padding-right: 8px !important; }
+            th:nth-child(3), td:nth-child(3) { width: 14%; padding-left: 4px !important; padding-right: 4px !important; }
+            
             table tr { page-break-inside: avoid; break-inside: avoid; }
-            #print-area td { line-height: 1.6; }
+            #print-area td { line-height: 1.6; padding: 4px !important; }
+            
+            .print-hide { display: none !important; }
+            .print-show { display: block !important; }
         }
     </style>
 </head>
@@ -209,7 +224,7 @@
                         <div class="mt-auto bg-blue-50/50 p-4 rounded-xl border border-blue-100 shadow-sm flex gap-3 items-start">
                             <div class="text-2xl mt-0.5">👕</div>
                             <div>
-                                <p class="text-sm font-bold text-slate-800 mb-1">날씨 맞춤 옷차림 추천</p>
+                                <p class="text-sm font-bold text-slate-800 mb-1">현지 기후 및 실내 에어컨 반영 옷차림 추천</p>
                                 <p class="text-xs text-slate-600 leading-relaxed">
                                     5월의 대만은 평균 25~30도로 덥고 습한 초여름 날씨입니다. <strong>통풍이 잘되는 반팔/반바지</strong> 위주로 준비하시고, 실내나 버스의 강한 에어컨에 대비해 <strong>얇은 가디건이나 바람막이</strong>를 꼭 챙겨주세요!
                                 </p>
@@ -301,12 +316,12 @@
             </div>
         </section>
 
-        <!-- Map Section -->
+        <!-- Map Section (식당 동선 추가) -->
         <section id="map-section" class="py-12 bg-white">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-slate-800 tracking-tight">한눈에 보는 대만 여정</h2>
-                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 그 날의 주요 이동 동선을 상세히 확인해 보세요.</p>
+                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 그 날의 식당과 주요 동선을 상세히 확인해 보세요.</p>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2 mb-6 px-2" id="map-controls">
@@ -351,7 +366,7 @@
                                 <span class="text-4xl bg-amber-100 p-4 rounded-2xl">🛫</span>
                                 <div>
                                     <h3 class="font-bold text-2xl text-slate-800">설렘의 시작, 대만 입국 및 랜드마크 탐방</h3>
-                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 사북 → 인천 → 타오위안 → 타이베이 시내</p>
+                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 사북 → 인천 → 타오위안 → 시티스윗(중식) → 국립고궁박물관 → 101타워</p>
                                 </div>
                             </div>
 
@@ -367,7 +382,7 @@
                                     <div class="timeline-dot bg-amber-600 ring-amber-100"></div>
                                     <h4 class="font-bold text-lg text-slate-800">✈️ 10:30 인천 출발 / 12:10 타오위안 도착</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        대한항공(KE2021) 탑승. 대만 도착 후 현지식(우육면)으로 점심 식사를 진행합니다.
+                                        대한항공(KE2021) 탑승. 대만 도착 후 <strong>시티스윗(City Suites)</strong>에서 현지식(우육면)으로 점심 식사를 진행합니다.
                                     </p>
                                 </div>
                                 <div class="relative">
@@ -393,8 +408,8 @@
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 투숙 및 휴식</h4>
-                                    <p class="text-slate-500 text-sm mt-2">현지식(샤브샤브 석식) 후 호텔 체크인 (알로프트 베이터우)</p>
+                                    <h4 class="font-bold text-lg text-slate-800">🏨 타카오 샤브샤브 석식 후 호텔 휴식</h4>
+                                    <p class="text-slate-500 text-sm mt-2">打狗霸(Takao Shabu Shabu)에서 푸짐한 현지식 샤브샤브 식사 후 알로프트 베이터우 체크인</p>
                                 </div>
                             </div>
                         </div>
@@ -405,7 +420,7 @@
                                 <span class="text-4xl bg-orange-100 p-4 rounded-2xl">🍍</span>
                                 <div>
                                     <h3 class="font-bold text-2xl text-slate-800">문화 체험과 항구도시의 낭만</h3>
-                                    <p class="text-orange-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 신베이 투청 수신방 문화관 → 단수이</p>
+                                    <p class="text-orange-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 신베이 투청 수신방 문화관 → 단수이 → 몽골리안 BBQ</p>
                                 </div>
                             </div>
 
@@ -419,15 +434,12 @@
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed mb-3">
                                         도리이, 행운의 고양이 등으로 <strong>마치 일본 교토 거리에 온 듯한 착각을 불러일으키는 수신방 창의 문화관</strong>에 방문합니다. 대만 명물 펑리수를 학생들이 직접 빚고 구워보는 의미 있는 DIY 체험을 진행합니다.
                                     </p>
-                                    <div class="bg-orange-50 border-l-4 border-orange-500 p-3 rounded-r-lg">
-                                        <span class="text-orange-700 font-bold text-xs"><i class="fa-solid fa-clock"></i> 소요시간 약 1시간 30분 (펑리수 제작 1시간 + 문화원 관람 30분) <br><i class="fa-solid fa-gift"></i> 본인이 직접 만든 펑리수는 예쁘게 포장하여 가져갈 수 있습니다.</span>
-                                    </div>
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-blue-500 ring-blue-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏰 홍마오청 (단수이)</h4>
+                                    <h4 class="font-bold text-lg text-slate-800">🏰 홍마오청 (단수이) & 중식</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        낭만의 항구도시 단수이로 이동합니다. 스페인, 네덜란드, 영국 등의 영향을 받은 붉은 벽돌의 요새 '홍마오청'을 거닐며 대만의 근대 식민 역사를 둘러봅니다. 영화 '말할 수 없는 비밀'의 촬영지로도 유명합니다.
+                                        낭만의 항구도시 단수이로 이동합니다. <strong>하이옌(海宴)</strong> 식당에서 신선한 해산물 합채로 점심을 먹고, 붉은 벽돌의 요새 '홍마오청'을 거닐며 대만의 근대 식민 역사를 둘러봅니다.
                                     </p>
                                 </div>
                                 <div class="relative">
@@ -439,8 +451,8 @@
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 귀환 및 휴식</h4>
-                                    <p class="text-slate-500 text-sm mt-2">호텔식(조식) / 현지식(중/석식-몽골리안 BBQ)</p>
+                                    <h4 class="font-bold text-lg text-slate-800">🏨 몽골리안 BBQ 석식 및 호텔 귀환</h4>
+                                    <p class="text-slate-500 text-sm mt-2">大戈壁蒙古烤肉(Da Gobi)에서 이색적인 몽골리안 BBQ 뷔페 식사 후 휴식</p>
                                 </div>
                             </div>
                         </div>
@@ -451,7 +463,7 @@
                                 <span class="text-4xl bg-amber-100 p-4 rounded-2xl">🏮</span>
                                 <div>
                                     <h3 class="font-bold text-2xl text-slate-800">자연의 신비와 소원 기원 (예스지)</h3>
-                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 예류 지질공원 → 스펀 → 지우펀 → 야시장</p>
+                                    <p class="text-amber-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 예류 지질공원 → 스펀 → 지우펀 → 한시대(석식) → 스린 야시장</p>
                                 </div>
                             </div>
 
@@ -472,22 +484,17 @@
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-amber-600 ring-amber-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏮 지우펀</h4>
+                                    <h4 class="font-bold text-lg text-slate-800">🏮 지우펀 & 지우펀 식락(중식)</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        산비탈을 따라 이어진 좁은 계단과 골목마다 홍등이 빛나는 낭만적인 마을입니다. 애니메이션 '센과 치히로의 행방불명'의 모티브가 된 찻집 수취루를 배경으로 사진을 남기며 대만의 정취를 느낍니다.
+                                        <strong>지우펀 식락(九份食樂)</strong>에서 맛있는 합채 점심을 먹고, 홍등이 빛나는 낭만적인 마을 지우펀 골목길을 걷습니다. 애니메이션 '센과 치히로의 행방불명' 모티브 장소에서 대만의 정취를 느낍니다.
                                     </p>
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-blue-800 ring-blue-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🌙 스린 야시장</h4>
+                                    <h4 class="font-bold text-lg text-slate-800">🌙 스린 야시장 및 무제한 삼겹살</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        타이베이 시내 최대 규모의 야시장입니다. 학생들끼리 조별로 안전하게 이동하며 지파이, 망고빙수 등 다양한 대만의 길거리 음식 문화를 활기차게 경험합니다.
+                                        시내의 <strong>한시대(韓時代)</strong>에서 반가운 무제한 삼겹살로 든든한 저녁을 즐긴 후, 타이베이 최대 규모의 스린 야시장으로 이동하여 조별 탐방을 진행합니다.
                                     </p>
-                                </div>
-                                <div class="relative">
-                                    <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏨 호텔 귀환 및 휴식</h4>
-                                    <p class="text-slate-500 text-sm mt-2">호텔식(조식) / 현지식(중/석식-무제한 삼겹살)</p>
                                 </div>
                             </div>
                         </div>
@@ -596,7 +603,8 @@
                 <div class="max-w-4xl mx-auto">
                     <div class="space-y-4">
                         <div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border border-slate-700 bg-black relative">
-                            <iframe class="w-full h-full absolute top-0 left-0" src="https://www.youtube-nocookie.com/embed/ZmTvNm1R0HI" title="대만 홍보영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <!-- controls=1 적용 원칙 -->
+                            <iframe class="w-full h-full absolute top-0 left-0" src="https://www.youtube-nocookie.com/embed/ZmTvNm1R0HI?controls=1" title="대만 홍보영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                         <div class="text-center">
                             <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-1 rounded-full mb-2 inline-block">Official</span>
@@ -740,20 +748,15 @@
             </div>
 
             <div class="container mx-auto px-4">
-                <div class="flex items-center justify-center gap-4 mb-8">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="Tourmaker" class="h-10">
-                </div>
-                
-                <p class="text-[12px] md:text-[13px] text-[#6c757d] font-normal mb-8 max-w-2xl mx-auto leading-relaxed text-center">
-                    [System Powered by TOURMAKER] 본 스마트 가이드북은 <strong>사북고등학교</strong>의 기획과 <a href="http://tourmaker.kr" target="_blank" class="font-bold text-[#6c757d] hover:text-blue-600 underline underline-offset-2">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.
-                </p>
-
                 <div class="mb-12">
                     <a href="http://tourmaker.kr" target="_blank" class="inline-block border border-slate-300 rounded-2xl px-8 py-4 bg-white text-slate-700 font-bold hover:bg-slate-50 transition-all shadow-sm">
                         👉 <span class="mr-2">투어메이커</span> 공식 홈페이지 바로가기
                     </a>
                 </div>
                 
+                <p class="text-[12px] md:text-[13px] text-[#6c757d] font-normal mb-8 max-w-2xl mx-auto leading-relaxed text-center">
+                    [System Powered by TOURMAKER] 본 스마트 가이드북은 <strong>사북고등학교</strong>의 기획과 투어메이커의 트래블 테크 기술 제휴로 제작되었습니다.
+                </p>
                 <p class="text-[10px] text-slate-400">&copy; 2026 Tourmaker Inc. All rights reserved.</p>
             </div>
         </footer>
@@ -764,7 +767,7 @@
     <!-- ========================================== -->
     <div id="print-area" class="hidden print:block w-full bg-white text-black py-4">
         <h1 class="text-2xl font-black text-center mb-6 pb-4 border-b-2 border-slate-800" style="font-family: 'Nanum Myeongjo', serif;">
-            사북고등학교 대만 역사문화탐방 일정표
+            ■ 사북고등학교 대만 역사문화탐방 일정표
         </h1>
         
         <div class="flex justify-between items-end mb-4 font-bold text-sm">
@@ -781,78 +784,82 @@
         <table class="w-full border-collapse border-2 border-slate-800 text-sm">
             <thead>
                 <tr class="bg-slate-100 text-slate-800">
-                    <th class="border border-slate-800 py-2 px-3 w-20 text-center font-bold">일차</th>
+                    <th class="border border-slate-800 py-2 px-3 text-center font-bold">일차</th>
                     <th class="border border-slate-800 py-2 px-3 text-center font-bold">상세 일정</th>
-                    <th class="border border-slate-800 py-2 px-3 w-28 text-center font-bold">비고/식사</th>
+                    <th class="border border-slate-800 py-2 px-3 text-center font-bold">식사</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Day 1 -->
                 <tr>
                     <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">1일차<br><span class="text-xs font-normal">(5.26)</span></td>
-                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                    <td class="border border-slate-800 py-3 align-top leading-relaxed">
                         04:00 사북 집결 및 출발<br>
-                        <strong class="text-blue-700">인천공항 T2 출발 (대한항공 KE2021 10:30) ✈️ 타오위안 도착 (12:10)</strong><br>
-                        ▶ <strong>국립고궁박물관</strong> : 세계 4대 박물관 관람<br>
-                        ▶ <strong>충렬사</strong> : 근위병 교대식 참관<br>
-                        ▶ <strong>101 타워 전망대</strong> : 타이베이 전경 조망<br>
-                        ▶ 호텔 투숙 및 휴식 (알로프트 베이터우)
+                        <strong style="color: #004098">인천공항 T2 출발 (KE2021 10:30) ✈️ 타오위안 도착 (12:10)</strong><br>
+                        ■ <strong>국립고궁박물관</strong> : 세계 4대 박물관 관람<br>
+                        ■ <strong>충렬사</strong> : 근위병 교대식 참관<br>
+                        ■ <strong>101 타워 전망대</strong> : 타이베이 전경 조망<br>
+                        ■ 호텔 투숙 및 휴식 (알로프트 베이터우)
                     </td>
-                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
-                        [조] 불포함<br>
-                        [중] 현지식(우육면)<br>
-                        [석] 현지식(샤브샤브)
+                    <td class="border border-slate-800 py-3 px-2 align-middle text-xs text-slate-700 text-left">
+                        <div class="flex flex-col gap-1">
+                            <span>[조] 불포함</span>
+                            <span>[중] 우육면<br> <span class="text-[10px] text-slate-500">(시티스윗)</span></span>
+                            <span>[석] 샤브샤브<br> <span class="text-[10px] text-slate-500">(타카오 샤브)</span></span>
+                        </div>
                     </td>
                 </tr>
                 <!-- Day 2 -->
                 <tr>
                     <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">2일차<br><span class="text-xs font-normal">(5.27)</span></td>
-                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
-                        ▶ 호텔 조식 후 일정 시작<br>
-                        <!-- 수신방 펑리수 체험으로 수정 -->
-                        ▶ <strong>수신방 펑리수 만들기 체험</strong> : 문화관 견학 및 펑리수 DIY 클래스 (약 1.5H)<br>
-                        ▶ 단수이 이동<br>
-                        ▶ <strong>홍마오청 / 진리대학</strong> : 서구식 건축물 및 낭만의 거리 산책<br>
-                        ▶ <strong>단수이 라오제 & 유람선</strong> : 옛거리 먹거리 체험 및 전통 유람선 탑승<br>
-                        ▶ 석식 후 호텔 휴식
+                    <td class="border border-slate-800 py-3 align-top leading-relaxed">
+                        ■ <strong>수신방 펑리수 만들기 체험</strong> : 문화관 견학 및 DIY 클래스<br>
+                        ■ 단수이 이동<br>
+                        ■ <strong>홍마오청 / 진리대학</strong> : 서구식 건축물 및 낭만의 거리 산책<br>
+                        ■ <strong>단수이 라오제 & 유람선</strong> : 옛거리 먹거리 체험 및 선박 탑승<br>
+                        ■ 석식 후 호텔 휴식
                     </td>
-                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
-                        [조] 호텔식<br>
-                        [중] 현지식<br>
-                        [석] 현지식(몽골리안 BBQ)
+                    <td class="border border-slate-800 py-3 px-2 align-middle text-xs text-slate-700 text-left">
+                        <div class="flex flex-col gap-1">
+                            <span>[조] 호텔식</span>
+                            <span>[중] 현지식<br> <span class="text-[10px] text-slate-500">(하이옌)</span></span>
+                            <span>[석] 현지식<br> <span class="text-[10px] text-slate-500">(몽골리안BBQ)</span></span>
+                        </div>
                     </td>
                 </tr>
                 <!-- Day 3 -->
                 <tr>
                     <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">3일차<br><span class="text-xs font-normal">(5.28)</span></td>
-                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
-                        ▶ 호텔 조식 후 예스지로 이동<br>
-                        ▶ <strong>예류 국립해양 지질공원</strong> : 희귀 기암괴석 탐방<br>
-                        ▶ <strong>스펀 천등 날리기</strong> : 4인 1조 기찻길 소원 등 띄우기<br>
-                        ▶ <strong>지우펀</strong> : 센과 치히로의 모티브가 된 옛마을 골목길<br>
-                        ▶ <strong>스린 야시장</strong> : 타이베이 최대 야시장 조별 문화/먹거리 체험<br>
-                        ▶ 호텔 귀환 및 휴식
+                    <td class="border border-slate-800 py-3 align-top leading-relaxed">
+                        ■ <strong>예류 국립해양 지질공원</strong> : 희귀 기암괴석 탐방<br>
+                        ■ <strong>스펀 천등 날리기</strong> : 4인 1조 기찻길 소원 등 띄우기<br>
+                        ■ <strong>지우펀</strong> : 센과 치히로의 모티브가 된 옛마을 골목길<br>
+                        ■ <strong>스린 야시장</strong> : 타이베이 최대 야시장 조별 문화/먹거리 체험<br>
+                        ■ 호텔 귀환 및 휴식
                     </td>
-                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
-                        [조] 호텔식<br>
-                        [중] 현지식<br>
-                        [석] 현지식(무제한 삼겹살)
+                    <td class="border border-slate-800 py-3 px-2 align-middle text-xs text-slate-700 text-left">
+                        <div class="flex flex-col gap-1">
+                            <span>[조] 호텔식</span>
+                            <span>[중] 현지식<br> <span class="text-[10px] text-slate-500">(지우펀 식락)</span></span>
+                            <span>[석] 무제한고기<br> <span class="text-[10px] text-slate-500">(한시대)</span></span>
+                        </div>
                     </td>
                 </tr>
                 <!-- Day 4 -->
                 <tr>
                     <td class="border border-slate-800 py-3 px-2 text-center align-top font-bold bg-slate-50">4일차<br><span class="text-xs font-normal">(5.29)</span></td>
-                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
-                        ▶ 호텔 조식 후 체크아웃<br>
-                        ▶ <strong>스린 관저</strong> : 장제스 총통 정원 산책<br>
-                        ▶ 타오위안 공항으로 이동 및 수속<br>
-                        <strong class="text-red-700">타오위안 출발 (대한항공 KE2022 13:20) ✈️ 인천공항 T2 도착 (16:50)</strong><br>
-                        ▶ 전용버스로 학교 복귀 후 해산
+                    <td class="border border-slate-800 py-3 align-top leading-relaxed">
+                        ■ <strong>스린 관저</strong> : 장제스 총통 정원 산책<br>
+                        ■ 타오위안 공항으로 이동 및 수속<br>
+                        <strong style="color: #004098">타오위안 출발 (KE2022 13:20) ✈️ 인천공항 T2 도착 (16:50)</strong><br>
+                        ■ 전용버스로 학교 복귀 후 해산
                     </td>
-                    <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
-                        [조] 호텔식<br>
-                        [중] 불포함 (또는 기내식)<br>
-                        [석] 불포함
+                    <td class="border border-slate-800 py-3 px-2 align-middle text-xs text-slate-700 text-left">
+                        <div class="flex flex-col gap-1">
+                            <span>[조] 호텔식</span>
+                            <span>[중] 불포함<br> <span class="text-[10px] text-slate-500">(기내식 대체)</span></span>
+                            <span>[석] 불포함</span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -863,7 +870,7 @@
         </div>
         
         <div class="mt-12 flex justify-end">
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8" alt="Tourmaker" class="h-8 md:h-10 object-contain opacity-90">
+            <span class="print-footer-text">[System Powered by TOURMAKER]</span>
         </div>
     </div>
 
@@ -947,7 +954,6 @@
             };
 
             try {
-                // timezone=Asia/Taipei 로 명시적 지정하여 CORS 및 파싱 오류 방지
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=25.0330&longitude=121.5654&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTaipei');
                 if (!res.ok) throw new Error('API request failed');
                 
@@ -957,9 +963,8 @@
                 renderWeatherUI(data.daily.time, data.daily.weather_code, data.daily.temperature_2m_max, data.daily.temperature_2m_min);
             } catch (e) {
                 console.warn("날씨 API 호출 실패. 안전을 위해 기본(예상) 데이터로 폴백합니다.", e);
-                // API 실패 시 오류 문구를 띄우지 않고, 대만 평균 날씨 데이터(폴백)를 UI에 렌더링
                 const mockTimes = [];
-                const mockCodes = [61, 3, 61, 63, 3, 2, 61]; // 맑음/흐림/비 혼합 예보
+                const mockCodes = [61, 3, 61, 63, 3, 2, 61]; 
                 const mockMax = [28, 30, 29, 27, 31, 32, 29];
                 const mockMin = [23, 24, 24, 22, 25, 26, 24];
                 
@@ -973,10 +978,9 @@
             }
         }
 
-        // 환율 변수 전역 설정 (계산기용)
-        window.currentRate = 42.5; // API 호출 실패 대비 기본값 세팅
+        // 환율 계산기 전역 설정
+        window.currentRate = 42.5; 
 
-        // 환율 계산기 로직
         window.calcExchange = function(mode) {
             const krwInput = document.getElementById('calc-krw');
             const twdInput = document.getElementById('calc-twd');
@@ -1004,7 +1008,7 @@
                 const baseRate = krwPerUsd / twdPerUsd;
                 const appliedRate = baseRate * 1.015; 
                 
-                window.currentRate = appliedRate; // 계산기 변수에 덮어쓰기
+                window.currentRate = appliedRate; 
 
                 container.innerHTML = `
                     <div class="flex items-end gap-2">
@@ -1012,10 +1016,9 @@
                         <span class="text-lg font-bold text-slate-400 mb-1">=</span>
                         <span class="text-3xl font-black text-green-600">${appliedRate.toFixed(1)} 원</span>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-1">* 현지 결제/송금 수수료를 고려한 실제 체감 환율입니다.</p>
+                    <p class="text-[10px] text-slate-400 mt-1">* 현지 송금 수수료(1.5%)를 반영한 실제 체감 환율입니다.</p>
                 `;
 
-                // 물가 비교 렌더링
                 const items = [
                     { name: "스타벅스 아메리카노", twd: 100, icon: "☕" },
                     { name: "편의점 생수 1병", twd: 25, icon: "💧" },
@@ -1065,18 +1068,12 @@
             }
         }
 
-        // Checklist Logic
+        // Checklist & Memo Logic
         const CHECK_KEY = 'sabuk_taiwan_checklist_v1'; 
         const CHECK_ITEMS = [
-            '여권 (유효기간 6개월 이상)',
-            '돼지코 (110V 전원 변환 어댑터 11자형 필수)',
-            '휴대용 우산 / 우비 (5월 잦은 비 대비)',
-            '개인 상비약 (멀미약, 소화제, 밴드)',
-            '여벌 옷 (습한 날씨 대비 넉넉하게)',
-            '얇은 겉옷 (냉방이 강한 실내 및 버스용)',
-            '엔화 환전 대신 대만달러(TWD) 준비',
-            '걷기 편한 운동화',
-            '보조배터리 (반드시 수하물 아닌 기내 반입)',
+            '여권 (유효기간 6개월 이상)', '돼지코 (110V 전원 변환 어댑터 11자형 필수)', '휴대용 우산 / 우비 (5월 잦은 비 대비)',
+            '개인 상비약 (멀미약, 소화제, 밴드)', '여벌 옷 (습한 날씨 대비 넉넉하게)', '얇은 겉옷 (냉방이 강한 실내 및 버스용)',
+            '엔화 환전 대신 대만달러(TWD) 준비', '걷기 편한 운동화', '보조배터리 (반드시 수하물 아닌 기내 반입)'
         ];
 
         function renderChecklist(){
@@ -1102,7 +1099,6 @@
                 });
             });
         }
-        
         window.resetChecklist = function(){
             if(confirm('체크리스트를 초기화하시겠습니까?')){
                 localStorage.removeItem(CHECK_KEY);
@@ -1111,58 +1107,65 @@
         }
         renderChecklist();
 
-        // Memo Logic
         (function(){
             const memo = document.getElementById('travel-memo');
             if(!memo) return;
             const KEY = 'sabuk_taiwan_memo_v1'; 
             memo.value = localStorage.getItem(KEY) || '';
-            memo.addEventListener('input', () => {
-                localStorage.setItem(KEY, memo.value);
-            });
+            memo.addEventListener('input', () => { localStorage.setItem(KEY, memo.value); });
         })();
 
-        // Map Route & Layer Logic
+        // 🗺️ Map Route & Layer Logic [지도 UI 5대 원칙 적용 완료]
         let map;
-        let mapLayers = [];
+        let mapLayerGroup = null; // 원칙 4. LayerGroup 적용
 
+        // 식당 정보가 추가된 좌표 (spots)
         const spots = {
             tpe: { coords: [25.0797, 121.2342], title: "타오위안 공항", color: "#64748b", icon: "✈️", isSub: false },
-            taipei_101: { coords: [25.0330, 121.5654], title: "타이베이 101", color: "#2563eb", icon: "🏙️", isSub: false },
+            city_suites: { coords: [25.0618, 121.2173], title: "시티스윗 (1일차 중식)", color: "#f59e0b", icon: "🍜", isSub: true },
             museum: { coords: [25.1024, 121.5485], title: "국립고궁박물관", color: "#2563eb", icon: "🏛️", isSub: true },
-            aloft_beitou: { coords: [25.1278, 121.4984], title: "알로프트 베이터우 (숙소)", color: "#1e293b", icon: "🏨", isSub: true },
-            shu_shin_bou: { coords: [24.9744, 121.4448], title: "수신방 창의 화과자 문화관", color: "#f59e0b", icon: "🍍", isSub: true },
-            tamsui: { coords: [25.1753, 121.4332], title: "단수이 (2일차)", color: "#0d9488", icon: "2️⃣", isSub: false },
+            taipei_101: { coords: [25.0330, 121.5654], title: "타이베이 101", color: "#2563eb", icon: "🏙️", isSub: false },
+            takao_shabu: { coords: [25.0444, 121.5037], title: "타카오 샤브샤브 (1일차 석식)", color: "#f59e0b", icon: "🍲", isSub: true },
+            aloft_beitou: { coords: [25.1278, 121.4984], title: "알로프트 베이터우 (숙소)", color: "#1e293b", icon: "🏨", isSub: false },
+
+            shu_shin_bou: { coords: [24.9744, 121.4448], title: "수신방 펑리수 체험", color: "#0d9488", icon: "🍍", isSub: true },
+            tamsui: { coords: [25.1753, 121.4332], title: "단수이", color: "#0d9488", icon: "2️⃣", isSub: false },
+            haiyan: { coords: [25.1868, 121.4429], title: "하이옌 (2일차 중식)", color: "#f59e0b", icon: "🦀", isSub: true },
+            dagobi: { coords: [25.0534, 121.5329], title: "몽골리안 BBQ (2일차 석식)", color: "#f59e0b", icon: "🍖", isSub: true },
+
             yehliu: { coords: [25.2064, 121.6903], title: "예류 지질공원", color: "#d97706", icon: "🗿", isSub: true },
             shifen: { coords: [25.0409, 121.7766], title: "스펀 (천등)", color: "#d97706", icon: "🙏", isSub: true },
-            jiufen: { coords: [25.1099, 121.8451], title: "지우펀 (3일차)", color: "#d97706", icon: "3️⃣", isSub: false }
+            jiufen: { coords: [25.1099, 121.8451], title: "지우펀", color: "#d97706", icon: "3️⃣", isSub: false },
+            jiufen_shilu: { coords: [25.0955, 121.8655], title: "지우펀 식락 (3일차 중식)", color: "#f59e0b", icon: "🍱", isSub: true },
+            hanshidae: { coords: [25.0478, 121.5328], title: "한시대 (3일차 석식)", color: "#f59e0b", icon: "🥓", isSub: true },
+            shilin: { coords: [25.0878, 121.5245], title: "스린 야시장", color: "#d97706", icon: "🌙", isSub: true }
         };
 
         const routes = {
             all: {
-                points: ['tpe', 'museum', 'taipei_101', 'aloft_beitou', 'shu_shin_bou', 'tamsui', 'yehliu', 'shifen', 'jiufen'],
+                points: ['tpe', 'city_suites', 'museum', 'taipei_101', 'takao_shabu', 'aloft_beitou', 'shu_shin_bou', 'tamsui', 'haiyan', 'dagobi', 'yehliu', 'shifen', 'jiufen', 'jiufen_shilu', 'hanshidae', 'shilin'],
                 lines: [
-                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' },
-                    { latlngs: [spots.aloft_beitou.coords, spots.shu_shin_bou.coords, spots.tamsui.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' },
-                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
+                    { latlngs: [spots.tpe.coords, spots.city_suites.coords, spots.museum.coords, spots.taipei_101.coords, spots.takao_shabu.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' },
+                    { latlngs: [spots.aloft_beitou.coords, spots.shu_shin_bou.coords, spots.tamsui.coords, spots.haiyan.coords, spots.dagobi.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' },
+                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.jiufen_shilu.coords, spots.hanshidae.coords, spots.shilin.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
                 ]
             },
             day1: {
-                points: ['tpe', 'museum', 'taipei_101', 'aloft_beitou'],
+                points: ['tpe', 'city_suites', 'museum', 'taipei_101', 'takao_shabu', 'aloft_beitou'],
                 lines: [
-                    { latlngs: [spots.tpe.coords, spots.museum.coords, spots.taipei_101.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' }
+                    { latlngs: [spots.tpe.coords, spots.city_suites.coords, spots.museum.coords, spots.taipei_101.coords, spots.takao_shabu.coords, spots.aloft_beitou.coords], color: '#2563eb', dash: '' }
                 ]
             },
             day2: {
-                points: ['aloft_beitou', 'shu_shin_bou', 'tamsui'],
+                points: ['aloft_beitou', 'shu_shin_bou', 'tamsui', 'haiyan', 'dagobi', 'aloft_beitou'],
                 lines: [
-                    { latlngs: [spots.aloft_beitou.coords, spots.shu_shin_bou.coords, spots.tamsui.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' }
+                    { latlngs: [spots.aloft_beitou.coords, spots.shu_shin_bou.coords, spots.tamsui.coords, spots.haiyan.coords, spots.dagobi.coords, spots.aloft_beitou.coords], color: '#0d9488', dash: '' }
                 ]
             },
             day3: {
-                points: ['aloft_beitou', 'yehliu', 'shifen', 'jiufen'],
+                points: ['aloft_beitou', 'yehliu', 'shifen', 'jiufen', 'jiufen_shilu', 'hanshidae', 'shilin', 'aloft_beitou'],
                 lines: [
-                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
+                    { latlngs: [spots.aloft_beitou.coords, spots.yehliu.coords, spots.shifen.coords, spots.jiufen.coords, spots.jiufen_shilu.coords, spots.hanshidae.coords, spots.shilin.coords, spots.aloft_beitou.coords], color: '#d97706', dash: '' }
                 ]
             },
             day4: {
@@ -1174,52 +1177,71 @@
         function drawMap(routeKey) {
             if (!map) return;
             
-            mapLayers.forEach(layer => map.removeLayer(layer));
-            mapLayers = [];
+            // 원칙 4: 탭 전환 시 layerGroup.clearLayers() 선행
+            if (mapLayerGroup) {
+                mapLayerGroup.clearLayers();
+            } else {
+                mapLayerGroup = L.layerGroup().addTo(map);
+            }
 
             const routeData = routes[routeKey];
-            
-            routeData.lines.forEach((lineDef) => {
-                const polyline = L.polyline(lineDef.latlngs, {
-                    color: lineDef.color,
-                    weight: 4,
-                    opacity: 0.8,
-                    dashArray: lineDef.dash
-                }).addTo(map);
-
-                setTimeout(() => {
-                    const path = polyline.getElement();
-                    if (path && lineDef.dash === '') { 
-                        const length = path.getTotalLength();
-                        path.style.transition = 'none';
-                        path.style.strokeDasharray = length + ' ' + length;
-                        path.style.strokeDashoffset = length;
-                        path.getBoundingClientRect(); 
-                        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
-                        path.style.strokeDashoffset = '0';
-                    }
-                }, 50);
-
-                mapLayers.push(polyline);
-            });
-
             let currentBounds = L.latLngBounds();
-            routeData.points.forEach(key => {
+
+            // 마커 배치
+            routeData.points.forEach((key, idx) => {
                 const spot = spots[key];
                 const size = spot.isSub ? 22 : 28;
                 const fontSize = spot.isSub ? 10 : 12;
                 
+                // 원칙 1: 마커에 CSS popIn 애니메이션 삽입 (animation-delay 0.5s 곱연산)
                 const icon = L.divIcon({
                     className: 'custom-icon',
-                    html: `<div style="background-color:${spot.color}; width:${size}px; height:${size}px; border-radius:50%; border:2px solid white; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:${fontSize}px;">${spot.icon}</div>`,
+                    html: `<div style="background-color:${spot.color}; width:${size}px; height:${size}px; border-radius:50%; border:2px solid white; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:${fontSize}px; animation: popIn 0.5s forwards; animation-delay: ${idx * 0.5}s;">${spot.icon}</div>`,
                     iconSize: [size, size]
                 });
-                const marker = L.marker(spot.coords, {icon: icon}).addTo(map).bindPopup(`<b>${spot.title}</b>`);
-                mapLayers.push(marker);
+                
+                // 원칙 5: 이름은 bindTooltip으로 hover 처리
+                const marker = L.marker(spot.coords, {icon: icon})
+                    .bindTooltip(`<b>${spot.title}</b>`, { direction: 'top', offset: [0, -(size/2)] });
+                
+                mapLayerGroup.addLayer(marker);
                 currentBounds.extend(spot.coords);
             });
 
-            map.fitBounds(currentBounds, { padding: [50, 50], maxZoom: 12 });
+            map.fitBounds(currentBounds, { padding: [50, 50], maxZoom: 13 });
+
+            // 원칙 2 & 3: 안정화(setTimeout) 후 선 긋기 애니메이션 실행
+            setTimeout(() => {
+                routeData.lines.forEach((lineDef) => {
+                    const polyline = L.polyline(lineDef.latlngs, {
+                        color: lineDef.color,
+                        weight: 4,
+                        opacity: 0.8,
+                        dashArray: lineDef.dash
+                    }).addTo(mapLayerGroup);
+
+                    if (lineDef.dash === '') {
+                        const path = polyline.getElement();
+                        if (path) {
+                            const length = path.getTotalLength();
+                            path.style.transition = 'none';
+                            path.style.strokeDasharray = length + ' ' + length;
+                            path.style.strokeDashoffset = length;
+                            path.getBoundingClientRect(); // 강제 리플로우
+
+                            path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                            path.style.strokeDashoffset = '0';
+                            
+                            // 완료 후 초기화
+                            setTimeout(() => {
+                                path.style.transition = '';
+                                path.style.strokeDasharray = '';
+                                path.style.strokeDashoffset = '';
+                            }, 2000);
+                        }
+                    }
+                });
+            }, 300);
         }
 
         window.changeMapRoute = function(dayKey) {
