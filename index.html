@@ -971,40 +971,81 @@
         (function initDdayAndHero() {
             const startDateStr = '2026-05-26';
             const endDateStr = '2026-05-29';
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const startDate = new Date(startDateStr);
-            const endDate = new Date(endDateStr);
-            
-            const diffStart = Math.ceil((startDate - today) / (1000*60*60*24));
-            const diffEnd = Math.ceil((endDate - today) / (1000*60*60*24));
-            
+            const schoolName = '사북고등학교';
+
+            const parseLocalDate = (dateStr) => {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                return new Date(y, m - 1, d);
+            };
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startDate = parseLocalDate(startDateStr);
+            const endDate = parseLocalDate(endDateStr);
+
+            const MS_DAY = 1000 * 60 * 60 * 24;
+            const diffStart = Math.round((startDate - today) / MS_DAY);
+            const diffEnd = Math.round((endDate - today) / MS_DAY);
+
             const badge = document.getElementById('d-day-badge');
             const heroContent = document.getElementById('hero-content');
-            
+            const heroTitle = document.getElementById('hero-title');
+            const heroPeriod = document.getElementById('hero-period');
+
+            const dayMessages = {
+                1: '설렘 가득한 대만, 역사·문화 탐방의 첫날입니다. 안전하고 즐거운 1일차 되세요!',
+                2: '문화 체험과 항구도시의 낭만, 2일차 여정이 진행 중입니다.',
+                3: '지우펀·예류·스펀·101 타워, 3일차 하이라이트 일정입니다.',
+                4: '아쉬움을 뒤로하고 안전한 귀국길, 마지막 4일차입니다.'
+            };
+
+            const ensureLiveBanner = () => {
+                let banner = document.getElementById('hero-live-banner');
+                if (!banner) {
+                    banner = document.createElement('div');
+                    banner.id = 'hero-live-banner';
+                    banner.className = 'mt-6 mx-auto max-w-3xl';
+                    if (heroPeriod) {
+                        heroPeriod.insertAdjacentElement('afterend', banner);
+                    } else {
+                        heroContent.appendChild(banner);
+                    }
+                }
+                return banner;
+            };
+
+            const clearLiveBanner = () => {
+                document.getElementById('hero-live-banner')?.remove();
+            };
+
             if (diffStart > 0) {
+                clearLiveBanner();
                 badge.textContent = `D-${diffStart}`;
                 badge.className = 'bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse';
             } else if (diffStart <= 0 && diffEnd >= 0) {
-                const currentDay = Math.abs(diffStart) + 1;
-                badge.textContent = `📍 ${currentDay}일차 진행중`;
+                const currentDay = diffStart === 0 ? 1 : (-diffStart + 1);
+                badge.textContent = diffStart === 0 ? 'D-DAY' : `📍 ${currentDay}일차`;
                 badge.className = 'bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm animate-pulse';
-                
-                heroContent.innerHTML = `
-                    <span class="bg-amber-600/90 px-6 py-2 rounded-full text-lg md:text-xl font-bold mb-6 inline-block border border-white/20 shadow-lg tracking-wide">사북고등학교 해외문화탐방</span>
-                    <h1 class="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg font-[Nanum Myeongjo] leading-tight">
-                        현재 <span class="text-yellow-400">사북고등학교</span>의<br>${currentDay}일차 여정이 활기차게 진행되고 있습니다.
-                    </h1>
+
+                const banner = ensureLiveBanner();
+                banner.innerHTML = `
+                    <div class="bg-red-600/90 border border-white/30 rounded-2xl px-5 py-4 shadow-xl animate-fade-in-up">
+                        <p class="text-lg md:text-xl font-bold text-white mb-1">📍 ${schoolName} ${currentDay}일차 여정 진행 중</p>
+                        <p class="text-sm md:text-base text-red-50 leading-relaxed">${dayMessages[currentDay] || `${currentDay}일차 일정을 즐겨 주세요.`}</p>
+                    </div>
                 `;
             } else {
-                badge.textContent = `🏁 여정 종료`;
+                clearLiveBanner();
+                badge.textContent = '여정 종료';
                 badge.className = 'bg-slate-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm';
-                
-                heroContent.innerHTML = `
-                    <span class="bg-slate-600/90 px-6 py-2 rounded-full text-lg md:text-xl font-bold mb-6 inline-block border border-white/20 shadow-lg tracking-wide">사북고등학교 해외문화탐방</span>
-                    <h1 class="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg font-[Nanum Myeongjo] leading-tight">
-                        모든 여정이 종료되었습니다.<br><span class="text-yellow-400">좋은 추억으로 오래 간직되길 바랍니다.</span>
-                    </h1>
+
+                if (heroTitle) {
+                    heroTitle.innerHTML = '감사합니다.<br><span class="text-yellow-400 font-bold">좋은 추억으로 오래 간직되길 바랍니다</span>';
+                }
+                const banner = ensureLiveBanner();
+                banner.innerHTML = `
+                    <div class="bg-slate-700/90 border border-white/20 rounded-2xl px-5 py-4 shadow-xl">
+                        <p class="text-lg md:text-xl font-bold text-white leading-relaxed">모든 여정이 종료되었습니다.<br>좋은 추억으로 오래 간직되길 바랍니다.</p>
+                    </div>
                 `;
             }
             badge.classList.remove('hidden');
